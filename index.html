@@ -1,0 +1,3482 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DREAM HOMES – Find Your Perfect Property</title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: {
+              950: '#060F1E',
+              900: '#0A192F',
+              800: '#112240',
+              700: '#1D3557',
+              600: '#274472',
+            },
+            gold: {
+              300: '#F1D77E',
+              400: '#E5C158',
+              500: '#D4AF37',
+              600: '#B69121',
+            },
+            slateLight: {
+              50: '#F8FAFC',
+              100: '#F4F6F9',
+              200: '#E2E8F0',
+              300: '#CBD5E1',
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          boxShadow: {
+            'luxury': '0 20px 45px -15px rgba(10, 25, 47, 0.14)',
+            'gold-glow': '0 10px 25px -5px rgba(212, 175, 55, 0.35)',
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom luxury styling, animations, and interactive states */
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: #F4F6F9;
+      color: #0A192F;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .font-display {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    /* Smooth custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F4F6F9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #112240;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D4AF37;
+    }
+
+    /* Hero entrance animation */
+    @keyframes fadeUpSlow {
+      from {
+        opacity: 0;
+        transform: translateY(22px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-up {
+      animation: fadeUpSlow 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .animate-fade-up-delay {
+      opacity: 0;
+      animation: fadeUpSlow 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+    }
+
+    /* Glassmorphism panels */
+    .glass-navy {
+      background: rgba(10, 25, 47, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .glass-white {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    /* Property card hover elevation */
+    .property-card {
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
+    }
+    .property-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 48px -14px rgba(10, 25, 47, 0.18);
+      border-color: #D4AF37;
+    }
+    .property-card:hover .property-img {
+      transform: scale(1.06);
+    }
+    .property-img {
+      transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Interactive 360 panorama stage */
+    .pano-stage {
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .pano-stage:active {
+      cursor: grabbing;
+    }
+
+    /* Interactive map grid */
+    .map-grid-bg {
+      background-color: #EBF1F6;
+      background-image:
+        linear-gradient(to right, rgba(17, 34, 64, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(17, 34, 64, 0.06) 1px, transparent 1px),
+        radial-gradient(circle at 25% 30%, rgba(212, 175, 55, 0.12), transparent 35%),
+        radial-gradient(circle at 75% 65%, rgba(17, 34, 64, 0.08), transparent 40%);
+      background-size: 44px 44px, 44px 44px, 100% 100%, 100% 100%;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-gold-500 selection:text-navy-900">
+
+  <!-- Toast Notification Container (Replaces alert() / confirm()) -->
+  <div id="toast-container" class="fixed top-20 right-4 z-[100] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-2 sm:px-0"></div>
+
+  <!-- ==================== TOP NAVIGATION BAR ==================== -->
+  <header id="main-navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-300 bg-navy-900/95 backdrop-blur-md border-b border-white/10 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 lg:h-20">
+        <!-- Brand Logo -->
+        <a href="#top" onclick="navigateToSection('top')" class="flex items-center gap-3 group shrink-0">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-navy-900 shadow-gold-glow group-hover:scale-105 transition-transform">
+            <i data-lucide="crown" class="w-5 h-5 stroke-[2.2]"></i>
+          </div>
+          <div class="leading-tight">
+            <span class="font-display text-lg sm:text-xl font-bold tracking-wider text-white block">DREAM HOMES</span>
+            <span class="text-[10px] uppercase tracking-[0.22em] text-gold-400 font-semibold hidden sm:block">Find Your Perfect Property</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden xl:flex items-center gap-6 text-sm font-medium text-slate-200">
+          <a href="#properties-section" class="hover:text-gold-400 transition-colors py-2">Properties</a>
+          <a href="#map-section" class="hover:text-gold-400 transition-colors py-2">Map Explorer</a>
+          <a href="#ai-suite-section" class="hover:text-gold-400 transition-colors py-2 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-gold-400 animate-pulse"></span>
+            AI Suite
+          </a>
+          <a href="#sell-section" class="hover:text-gold-400 transition-colors py-2">Sell Property</a>
+          <a href="#reviews-section" class="hover:text-gold-400 transition-colors py-2">Reviews</a>
+          <a href="#dashboard-section" class="hover:text-gold-400 transition-colors py-2">Dashboard</a>
+          <a href="#contact-section" class="hover:text-gold-400 transition-colors py-2">Contact</a>
+        </nav>
+
+        <!-- Action Controls -->
+        <div class="flex items-center gap-2 sm:gap-2.5">
+          <!-- Compare Drawer Trigger -->
+          <button onclick="openCompareModal()" class="relative p-2.5 rounded-xl bg-navy-800 hover:bg-navy-700 border border-white/10 text-slate-100 hover:text-gold-400 transition-all" title="Compare Properties (Up to 3)">
+            <i data-lucide="scale" class="w-4 h-4"></i>
+            <span id="nav-compare-count" class="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-gold-500 text-navy-900 text-[11px] font-bold flex items-center justify-center">0</span>
+          </button>
+
+          <!-- Saved Properties Trigger -->
+          <button onclick="scrollToDashboardTab('saved')" class="relative p-2.5 rounded-xl bg-navy-800 hover:bg-navy-700 border border-white/10 text-slate-100 hover:text-gold-400 transition-all" title="Saved Properties">
+            <i data-lucide="heart" class="w-4 h-4"></i>
+            <span id="nav-saved-count" class="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-white text-navy-900 text-[11px] font-bold flex items-center justify-center">0</span>
+          </button>
+
+          <!-- AI Chatbot Toggle -->
+          <button onclick="toggleChatbot(true)" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-navy-800 hover:bg-navy-700 border border-gold-500/40 text-gold-400 text-xs font-semibold transition-all">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>AI Concierge</span>
+          </button>
+
+          <!-- List Property CTA -->
+          <a href="#sell-section" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-navy-900 font-bold text-xs sm:text-sm shadow-gold-glow transition-all">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>List Property</span>
+          </a>
+
+          <!-- Mobile Menu Button -->
+          <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="xl:hidden p-2.5 rounded-xl bg-navy-800 hover:bg-navy-700 border border-white/10 text-white" aria-label="Toggle Menu">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden xl:hidden bg-navy-950 border-t border-white/10 px-4 py-4 space-y-1">
+      <a href="#properties-section" onclick="closeMobileMenu()" class="block px-3 py-2.5 rounded-xl text-sm font-medium text-slate-200 hover:bg-navy-800 hover:text-gold-400">Properties</a>
+      <a href="#map-section" onclick="closeMobileMenu()" class="block px-3 py-2.5 rounded-xl text-sm font-medium text-slate-200 hover:bg-navy-800 hover:text-gold-400">Interactive Map</a>
+      <a href="#ai-suite-section" onclick="closeMobileMenu()" class="block px-3 py-2.5 rounded-xl text-sm font-medium text-slate-200 hover:bg-navy-800 hover:text-gold-400">AI Features Suite</a>
+      <a href="#sell-section" onclick="closeMobileMenu()" class="block px-3 py-2.5 rounded-xl text-sm font-medium text-slate-200 hover:bg-navy-800 hover:text-gold-400">List / Sell Property</a>
+      <a href="#reviews-section" onclick="closeMobileMenu()" class="block px-3 py-2.5 rounded-xl text-sm font-medium text-slate-200 hover:bg-navy-800 hover:text-gold-400">Customer Reviews</a>
+      <a href="#dashboard-section" onclick="closeMobileMenu()" class="block px-3 py-2.5 rounded-xl text-sm font-medium text-slate-200 hover:bg-navy-800 hover:text-gold-400">User Dashboard</a>
+      <a href="#contact-section" onclick="closeMobileMenu()" class="block px-3 py-2.5 rounded-xl text-sm font-medium text-slate-200 hover:bg-navy-800 hover:text-gold-400">Contact & Visits</a>
+      <button onclick="closeMobileMenu(); toggleChatbot(true);" class="w-full mt-2 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-navy-800 border border-gold-500/40 text-gold-400 text-sm font-semibold">
+        <i data-lucide="sparkles" class="w-4 h-4"></i> Open AI Real Estate Chatbot
+      </button>
+    </div>
+  </header>
+
+  <main id="top" class="pt-16 lg:pt-20">
+
+    <!-- ==================== HERO & ADVANCED SEARCH SECTION ==================== -->
+    <section class="relative min-h-[88vh] flex flex-col justify-between overflow-hidden bg-navy-950">
+      <!-- Luxury Background Architecture Image with Fallback -->
+      <img
+        src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1920&q=85"
+        onerror="this.src='https://placehold.co/1920x1080/0A192F/D4AF37?text=DREAM+HOMES+Luxury+Estate'"
+        alt="Luxury architectural residence at twilight"
+        class="absolute inset-0 w-full h-full object-cover object-center opacity-65 scale-[1.02]"
+      />
+      <!-- Deep Navy & Champagne Vignette Overlay -->
+      <div class="absolute inset-0 bg-gradient-to-b from-navy-950/75 via-navy-900/65 to-navy-950"></div>
+
+      <!-- Hero Centerpiece Copy -->
+      <div class="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-8 text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-navy-800/80 border border-gold-400/40 text-gold-300 text-xs sm:text-sm font-medium mb-5 animate-fade-up">
+          <i data-lucide="award" class="w-4 h-4 text-gold-400"></i>
+          <span>Curated Architectural Estates • Verified Listings • AI Valuation</span>
+        </div>
+
+        <h1 class="font-display text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.12] max-w-4xl mx-auto animate-fade-up">
+          Find a Place You’ll Love to <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500">Call Home.</span>
+        </h1>
+
+        <p class="mt-4 sm:mt-5 text-base sm:text-xl text-slate-200 max-w-2xl mx-auto font-normal animate-fade-up-delay">
+          Discover your dream property with smarter property searching.
+        </p>
+
+        <!-- Primary CTA Buttons -->
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-3.5 sm:gap-4 animate-fade-up-delay">
+          <a href="#properties-section" class="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 rounded-2xl bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-navy-950 font-bold text-sm sm:text-base shadow-gold-glow transition-all transform hover:-translate-y-0.5">
+            <i data-lucide="compass" class="w-5 h-5"></i>
+            <span>Explore Properties</span>
+          </a>
+          <a href="#sell-section" class="inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/25 text-white font-semibold text-sm sm:text-base transition-all transform hover:-translate-y-0.5">
+            <i data-lucide="building-2" class="w-5 h-5 text-gold-400"></i>
+            <span>List Your Property</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Embedded Advanced Property Search Bar -->
+      <div class="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-10 sm:pb-14">
+        <form id="advanced-search-form" onsubmit="handleAdvancedSearch(event)" class="glass-white rounded-3xl p-4 sm:p-6 shadow-luxury border border-white/70 text-navy-900">
+          <!-- Mode Pills: Buy / Rent / Sell -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-200">
+            <div class="inline-flex p-1 rounded-2xl bg-slateLight-100 border border-slate-200" role="group" aria-label="Transaction Mode">
+              <button type="button" data-mode="All" onclick="setSearchMode('All')" class="search-mode-btn px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-navy-900 text-white shadow-sm">All Modes</button>
+              <button type="button" data-mode="Buy" onclick="setSearchMode('Buy')" class="search-mode-btn px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all text-navy-800 hover:bg-white">Buy</button>
+              <button type="button" data-mode="Rent" onclick="setSearchMode('Rent')" class="search-mode-btn px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all text-navy-800 hover:bg-white">Rent</button>
+              <button type="button" data-mode="Sell" onclick="setSearchMode('Sell')" class="search-mode-btn px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all text-navy-800 hover:bg-white">Sell</button>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <i data-lucide="sliders-horizontal" class="w-4 h-4 text-gold-600"></i>
+              <span>Instant multi-attribute filtering across curated listings</span>
+            </div>
+          </div>
+
+          <!-- Primary Search Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            <!-- Location / City -->
+            <div>
+              <label for="search-location" class="block text-xs font-bold uppercase tracking-wider text-navy-800 mb-1.5">Location or City</label>
+              <div class="relative">
+                <i data-lucide="map-pin" class="w-4 h-4 text-gold-600 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                <input id="search-location" type="text" list="city-suggestions" placeholder="Beverly Hills, Miami, Austin..." class="w-full pl-10 pr-3 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-400/30 outline-none text-sm font-medium text-navy-900" />
+                <datalist id="city-suggestions">
+                  <option value="Beverly Hills, CA"></option>
+                  <option value="Miami Beach, FL"></option>
+                  <option value="Austin, TX"></option>
+                  <option value="Manhattan, NY"></option>
+                  <option value="Scottsdale, AZ"></option>
+                  <option value="Aspen, CO"></option>
+                  <option value="Seattle, WA"></option>
+                </datalist>
+              </div>
+            </div>
+
+            <!-- Property Type -->
+            <div>
+              <label for="search-type" class="block text-xs font-bold uppercase tracking-wider text-navy-800 mb-1.5">Property Type</label>
+              <select id="search-type" class="w-full px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-400/30 outline-none text-sm font-medium text-navy-900">
+                <option value="All">All Property Types</option>
+                <option value="Luxury Villa">Luxury Villa</option>
+                <option value="Modern Apartment">Modern Apartment</option>
+                <option value="Independent House">Independent House</option>
+                <option value="Residential Plot">Residential Plot</option>
+                <option value="Commercial Building">Commercial Building</option>
+                <option value="Rental Property">Rental Property</option>
+                <option value="Farmhouse">Farmhouse</option>
+                <option value="Studio Apartment">Studio Apartment</option>
+              </select>
+            </div>
+
+            <!-- Min Budget -->
+            <div>
+              <label for="search-min-price" class="block text-xs font-bold uppercase tracking-wider text-navy-800 mb-1.5">Min Budget ($)</label>
+              <input id="search-min-price" type="number" min="0" step="10000" placeholder="e.g. 250000" class="w-full px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-400/30 outline-none text-sm font-medium text-navy-900" />
+            </div>
+
+            <!-- Max Budget -->
+            <div>
+              <label for="search-max-price" class="block text-xs font-bold uppercase tracking-wider text-navy-800 mb-1.5">Max Budget ($)</label>
+              <input id="search-max-price" type="number" min="0" step="10000" placeholder="e.g. 5000000" class="w-full px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-400/30 outline-none text-sm font-medium text-navy-900" />
+            </div>
+          </div>
+
+          <!-- Secondary Filter Row: Bedrooms, Bathrooms, Min Size, Furnished, Search CTA -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 mt-3.5 items-end">
+            <div>
+              <label for="search-beds" class="block text-xs font-bold uppercase tracking-wider text-navy-800 mb-1.5">Bedrooms</label>
+              <select id="search-beds" class="w-full px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 focus:border-gold-500 outline-none text-sm font-medium text-navy-900">
+                <option value="0">Any Beds</option>
+                <option value="1">1+ Beds</option>
+                <option value="2">2+ Beds</option>
+                <option value="3">3+ Beds</option>
+                <option value="4">4+ Beds</option>
+                <option value="5">5+ Beds</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="search-baths" class="block text-xs font-bold uppercase tracking-wider text-navy-800 mb-1.5">Bathrooms</label>
+              <select id="search-baths" class="w-full px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 focus:border-gold-500 outline-none text-sm font-medium text-navy-900">
+                <option value="0">Any Baths</option>
+                <option value="1">1+ Baths</option>
+                <option value="2">2+ Baths</option>
+                <option value="3">3+ Baths</option>
+                <option value="4">4+ Baths</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="search-size" class="block text-xs font-bold uppercase tracking-wider text-navy-800 mb-1.5">Min Area (sq.ft.)</label>
+              <input id="search-size" type="number" min="0" step="100" placeholder="e.g. 1200" class="w-full px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 focus:border-gold-500 outline-none text-sm font-medium text-navy-900" />
+            </div>
+
+            <div>
+              <label for="search-furnished" class="block text-xs font-bold uppercase tracking-wider text-navy-800 mb-1.5">Furnishing</label>
+              <select id="search-furnished" class="w-full px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 focus:border-gold-500 outline-none text-sm font-medium text-navy-900">
+                <option value="Any">Any Furnishing</option>
+                <option value="Furnished">Furnished</option>
+                <option value="Semi-Furnished">Semi-Furnished</option>
+                <option value="Unfurnished">Unfurnished</option>
+              </select>
+            </div>
+
+            <div class="flex gap-2">
+              <button type="submit" class="flex-1 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-gold-400 font-bold text-sm shadow-lg transition-all">
+                <i data-lucide="search" class="w-4 h-4"></i>
+                <span>Search Properties</span>
+              </button>
+              <button type="button" onclick="resetSearchFilters()" title="Reset Filters" class="p-2.5 rounded-xl bg-slateLight-100 hover:bg-slate-200 text-navy-800 border border-slate-200 transition-colors">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ==================== ANIMATED STATISTICS & SPECIAL OFFERS ==================== -->
+    <section class="bg-navy-900 text-white border-t border-gold-500/20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div id="stats-bar" class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 text-center">
+          <div class="p-4 rounded-2xl bg-navy-800/60 border border-white/10">
+            <div class="font-display text-3xl sm:text-4xl font-bold text-gold-400" data-target="1480" data-suffix="+">0</div>
+            <div class="text-xs sm:text-sm text-slate-300 mt-1 font-medium">Active Luxury Listings</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-navy-800/60 border border-white/10">
+            <div class="font-display text-3xl sm:text-4xl font-bold text-gold-400" data-target="9420" data-suffix="+">0</div>
+            <div class="text-xs sm:text-sm text-slate-300 mt-1 font-medium">Happy Homeowners</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-navy-800/60 border border-white/10">
+            <div class="font-display text-3xl sm:text-4xl font-bold text-gold-400" data-target="48" data-suffix="">0</div>
+            <div class="text-xs sm:text-sm text-slate-300 mt-1 font-medium">Prime Cities & Hubs</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-navy-800/60 border border-white/10">
+            <div class="font-display text-3xl sm:text-4xl font-bold text-gold-400" data-target="100" data-suffix="%">0</div>
+            <div class="text-xs sm:text-sm text-slate-300 mt-1 font-medium">Verified Property Deeds</div>
+          </div>
+        </div>
+
+        <!-- Special Property Offers Strip -->
+        <div class="mt-8 pt-7 border-t border-white/10">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded-lg bg-gold-500/20 border border-gold-400/40 text-gold-300 text-xs font-bold uppercase tracking-wider">Special Offers</span>
+              <h3 class="font-display text-lg sm:text-xl font-semibold text-white">Exclusive Buyer & Renter Privileges</h3>
+            </div>
+            <span class="text-xs text-slate-400">Limited-time seasonal incentives on selected residences</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 rounded-2xl bg-gradient-to-r from-navy-800 to-navy-700 border border-gold-500/30 flex items-start gap-3.5">
+              <div class="w-10 h-10 rounded-xl bg-gold-500/20 text-gold-400 flex items-center justify-center shrink-0">
+                <i data-lucide="percent" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-sm text-white">Zero Closing Fee Waiver</h4>
+                <p class="text-xs text-slate-300 mt-1">Save up to $18,000 on select Luxury Villas & Independent Houses booked this month.</p>
+              </div>
+            </div>
+            <div class="p-4 rounded-2xl bg-gradient-to-r from-navy-800 to-navy-700 border border-gold-500/30 flex items-start gap-3.5">
+              <div class="w-10 h-10 rounded-xl bg-gold-500/20 text-gold-400 flex items-center justify-center shrink-0">
+                <i data-lucide="sofa" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-sm text-white">Complimentary Designer Staging</h4>
+                <p class="text-xs text-slate-300 mt-1">Select Modern Apartments & Penthouses include a $25,000 bespoke interior credit.</p>
+              </div>
+            </div>
+            <div class="p-4 rounded-2xl bg-gradient-to-r from-navy-800 to-navy-700 border border-gold-500/30 flex items-start gap-3.5">
+              <div class="w-10 h-10 rounded-xl bg-gold-500/20 text-gold-400 flex items-center justify-center shrink-0">
+                <i data-lucide="key-round" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-sm text-white">First Month Rent Rebate</h4>
+                <p class="text-xs text-slate-300 mt-1">12-month leases on verified Studio & Rental Properties qualify for 50% off month one.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== FEATURED SPOTLIGHT & ALL PROPERTY LISTINGS ==================== -->
+    <section id="properties-section" class="py-14 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-[0.2em] text-gold-600 block mb-2">Curated Portfolio</span>
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-navy-900">Featured & Available Properties</h2>
+          <p class="text-slate-600 mt-1.5 text-sm sm:text-base max-w-2xl">
+            Explore architect-designed villas, penthouses, plots, commercial landmarks, farmhouses, and rentals.
+          </p>
+        </div>
+
+        <!-- Sort & Active Count Controls -->
+        <div class="flex flex-wrap items-center gap-3">
+          <span id="results-counter" class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-semibold text-navy-800">
+            Showing 8 properties
+          </span>
+          <select id="sort-properties" onchange="renderProperties()" class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-semibold text-navy-900 focus:border-gold-500 outline-none">
+            <option value="featured">Sort: Featured First</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="area-desc">Area: Largest First</option>
+            <option value="rating-desc">Highest Rated</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 8 Categories + All Tabs -->
+      <div id="category-tabs" class="flex items-center gap-2 overflow-x-auto pb-3 mb-8">
+        <!-- Rendered dynamically by JS -->
+      </div>
+
+      <!-- Property Cards Grid -->
+      <div id="properties-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-7">
+        <!-- Rendered dynamically by JS -->
+      </div>
+
+      <!-- Empty State when no properties match filters -->
+      <div id="empty-properties-state" class="hidden bg-white rounded-3xl p-10 text-center border border-slate-200 shadow-sm mt-6">
+        <div class="w-14 h-14 rounded-2xl bg-slateLight-100 text-navy-800 flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="search-x" class="w-7 h-7"></i>
+        </div>
+        <h3 class="font-display text-xl font-bold text-navy-900">No Matching Properties Found</h3>
+        <p class="text-slate-600 text-sm mt-1 max-w-md mx-auto">Try broadening your budget range, clearing the city filter, or switching property categories.</p>
+        <button onclick="resetSearchFilters()" class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-navy-900 text-gold-400 font-semibold text-sm hover:bg-navy-800 transition-colors">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          <span>Reset All Filters</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== INTERACTIVE PROPERTY MAP SECTION ==================== -->
+    <section id="map-section" class="py-14 sm:py-20 bg-white border-y border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-gold-600 block mb-2">Interactive Spatial View</span>
+            <h2 class="font-display text-3xl sm:text-4xl font-bold text-navy-900">Explore Properties on Interactive Map</h2>
+            <p class="text-slate-600 mt-1.5 text-sm sm:text-base">
+              Click any price marker to inspect listings, toggle nearby amenities, or search within the visible map viewport.
+            </p>
+          </div>
+
+          <!-- POI Layer Toggles & Area Search -->
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" onclick="togglePoiLayer('schools')" id="poi-btn-schools" class="poi-toggle-btn inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 bg-slateLight-50 text-navy-800 hover:border-gold-500 transition-all">
+              <i data-lucide="graduation-cap" class="w-3.5 h-3.5 text-navy-700"></i> Schools
+            </button>
+            <button type="button" onclick="togglePoiLayer('hospitals')" id="poi-btn-hospitals" class="poi-toggle-btn inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 bg-slateLight-50 text-navy-800 hover:border-gold-500 transition-all">
+              <i data-lucide="heart-pulse" class="w-3.5 h-3.5 text-rose-600"></i> Hospitals
+            </button>
+            <button type="button" onclick="togglePoiLayer('malls')" id="poi-btn-malls" class="poi-toggle-btn inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 bg-slateLight-50 text-navy-800 hover:border-gold-500 transition-all">
+              <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-amber-600"></i> Malls
+            </button>
+            <button type="button" onclick="togglePoiLayer('transit')" id="poi-btn-transit" class="poi-toggle-btn inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 bg-slateLight-50 text-navy-800 hover:border-gold-500 transition-all">
+              <i data-lucide="train-front" class="w-3.5 h-3.5 text-emerald-600"></i> Transit
+            </button>
+            <button type="button" onclick="searchCurrentMapArea()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-navy-900 text-gold-400 hover:bg-navy-800 shadow transition-all">
+              <i data-lucide="scan-search" class="w-3.5 h-3.5"></i> Search This Area
+            </button>
+          </div>
+        </div>
+
+        <!-- Map + Selected Property Detail Panel -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          <!-- Interactive Map Canvas -->
+          <div class="lg:col-span-8 relative h-[440px] sm:h-[520px] rounded-3xl overflow-hidden border-2 border-navy-900/10 shadow-luxury map-grid-bg">
+            <!-- Decorative Roads & Neighborhood Zones -->
+            <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-45" viewBox="0 0 800 520" preserveAspectRatio="none">
+              <path d="M 0 130 Q 260 110 420 220 T 800 180" stroke="#112240" stroke-width="5" fill="none" stroke-dasharray="10 6" />
+              <path d="M 180 0 C 210 190 340 320 560 520" stroke="#112240" stroke-width="6" fill="none" />
+              <path d="M 480 0 L 440 520" stroke="#D4AF37" stroke-width="4" fill="none" />
+              <circle cx="420" cy="240" r="110" fill="rgba(212, 175, 55, 0.08)" stroke="#D4AF37" stroke-width="1.5" stroke-dasharray="5 5" />
+            </svg>
+
+            <!-- Top-Left Map Controls -->
+            <div class="absolute top-4 left-4 z-20 flex flex-col gap-2">
+              <button type="button" onclick="adjustMapZoom(0.15)" class="w-9 h-9 rounded-xl bg-white hover:bg-slateLight-100 text-navy-900 border border-slate-200 shadow flex items-center justify-center font-bold" title="Zoom In">+</button>
+              <button type="button" onclick="adjustMapZoom(-0.15)" class="w-9 h-9 rounded-xl bg-white hover:bg-slateLight-100 text-navy-900 border border-slate-200 shadow flex items-center justify-center font-bold" title="Zoom Out">−</button>
+              <button type="button" onclick="resetMapViewport()" class="w-9 h-9 rounded-xl bg-white hover:bg-slateLight-100 text-navy-900 border border-slate-200 shadow flex items-center justify-center" title="Reset View">
+                <i data-lucide="locate-fixed" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Pan / Move Indicator Badge -->
+            <div class="absolute top-4 right-4 z-20 px-3 py-1.5 rounded-full glass-navy text-white text-xs font-medium flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-gold-400"></span>
+              <span id="map-zoom-label">Zoom: 100% • Drag map to pan</span>
+            </div>
+
+            <!-- Pannable / Zoomable Inner Layer -->
+            <div id="map-pan-layer" onmousedown="startMapPan(event)" ontouchstart="startMapPan(event)" class="relative w-full h-full cursor-grab active:cursor-grabbing transition-transform duration-150">
+              <div id="map-markers-container" class="w-full h-full relative"></div>
+              <div id="map-pois-container" class="w-full h-full relative pointer-events-none"></div>
+            </div>
+          </div>
+
+          <!-- Selected Property Quick Inspector -->
+          <div id="map-selected-card" class="lg:col-span-4 bg-slateLight-50 rounded-3xl border border-slate-200 p-5 sm:p-6 flex flex-col justify-between shadow-sm">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== AI-POWERED FEATURES SUITE (A - H) ==================== -->
+    <section id="ai-suite-section" class="py-14 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-navy-900 text-gold-400 text-xs font-bold uppercase tracking-widest mb-3">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Next-Gen Real Estate Intelligence
+        </span>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-navy-900">AI-Powered Property Suite</h2>
+        <p class="text-slate-600 mt-2 text-sm sm:text-base">
+          Smart recommendations, market price estimation, 360° room tours, side-by-side comparison, mortgage modeling, neighborhood insights, alerts, and AI concierge.
+        </p>
+      </div>
+
+      <!-- AI Tools Navigation Tabs -->
+      <div class="flex flex-wrap justify-center gap-2 mb-8">
+        <button onclick="switchAiTab('finder')" data-aitab="finder" class="ai-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all bg-navy-900 text-gold-400 shadow">
+          A. AI Property Finder
+        </button>
+        <button onclick="switchAiTab('estimator')" data-aitab="estimator" class="ai-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all bg-white text-navy-800 border border-slate-200 hover:border-gold-500">
+          B. Price Estimator
+        </button>
+        <button onclick="switchAiTab('tour360')" data-aitab="tour360" class="ai-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all bg-white text-navy-800 border border-slate-200 hover:border-gold-500">
+          D. 360° Virtual Tour
+        </button>
+        <button onclick="switchAiTab('compare')" data-aitab="compare" class="ai-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all bg-white text-navy-800 border border-slate-200 hover:border-gold-500">
+          E. Compare Properties
+        </button>
+        <button onclick="switchAiTab('mortgage')" data-aitab="mortgage" class="ai-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all bg-white text-navy-800 border border-slate-200 hover:border-gold-500">
+          F. Mortgage & EMI
+        </button>
+        <button onclick="switchAiTab('location')" data-aitab="location" class="ai-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all bg-white text-navy-800 border border-slate-200 hover:border-gold-500">
+          G. Location Intelligence
+        </button>
+        <button onclick="switchAiTab('alerts')" data-aitab="alerts" class="ai-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all bg-white text-navy-800 border border-slate-200 hover:border-gold-500">
+          H. Property Alerts
+        </button>
+      </div>
+
+      <!-- AI Panel Container -->
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-luxury p-5 sm:p-8">
+
+        <!-- A. AI PROPERTY FINDER -->
+        <div id="ai-panel-finder" class="ai-panel">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <form onsubmit="runAiPropertyFinder(event)" class="lg:col-span-5 space-y-4 bg-slateLight-50 p-5 sm:p-6 rounded-2xl border border-slate-200">
+              <div class="flex items-center gap-2 text-navy-900 font-bold text-lg">
+                <i data-lucide="wand-2" class="w-5 h-5 text-gold-600"></i>
+                <h3>AI Property Finder</h3>
+              </div>
+              <p class="text-xs text-slate-600">Tell us your lifestyle preferences and our matching engine will score the best residences for you.</p>
+
+              <div>
+                <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Preferred Location / Region</label>
+                <input id="ai-finder-location" type="text" placeholder="e.g. Miami, Beverly Hills, Austin, New York" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Max Budget ($)</label>
+                  <input id="ai-finder-budget" type="number" value="3500000" min="50000" step="50000" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Family Size</label>
+                  <select id="ai-finder-family" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500">
+                    <option value="1">Solo / Couple (1–2)</option>
+                    <option value="3" selected>Small Family (3)</option>
+                    <option value="4">Growing Family (4)</option>
+                    <option value="6">Large / Joint Family (5+)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Property Type</label>
+                <select id="ai-finder-type" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500">
+                  <option value="Any">Any Ideal Type</option>
+                  <option value="Luxury Villa">Luxury Villa</option>
+                  <option value="Modern Apartment">Modern Apartment</option>
+                  <option value="Independent House">Independent House</option>
+                  <option value="Farmhouse">Farmhouse</option>
+                  <option value="Studio Apartment">Studio Apartment</option>
+                  <option value="Commercial Building">Commercial Building</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase text-navy-800 mb-1.5">Must-Have Facilities</label>
+                <div class="grid grid-cols-2 gap-2 text-xs text-navy-800">
+                  <label class="flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-200 cursor-pointer">
+                    <input type="checkbox" class="ai-fac-check rounded text-gold-500" value="Pool" checked /> Private / Infinity Pool
+                  </label>
+                  <label class="flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-200 cursor-pointer">
+                    <input type="checkbox" class="ai-fac-check rounded text-gold-500" value="Gym" checked /> Fitness / Gym
+                  </label>
+                  <label class="flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-200 cursor-pointer">
+                    <input type="checkbox" class="ai-fac-check rounded text-gold-500" value="Garden" /> Landscaped Garden
+                  </label>
+                  <label class="flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-200 cursor-pointer">
+                    <input type="checkbox" class="ai-fac-check rounded text-gold-500" value="Security" checked /> 24/7 Smart Security
+                  </label>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-3 rounded-xl bg-navy-900 hover:bg-navy-800 text-gold-400 font-bold text-sm flex items-center justify-center gap-2 shadow-lg transition-all">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span>Find AI Matches</span>
+              </button>
+            </form>
+
+            <div class="lg:col-span-7">
+              <div class="flex items-center justify-between mb-4">
+                <h4 class="font-display text-xl font-bold text-navy-900">Recommended Properties for You</h4>
+                <span class="text-xs font-semibold text-gold-600 bg-gold-500/10 px-3 py-1 rounded-full">Smart Match Score</span>
+              </div>
+              <div id="ai-finder-results" class="space-y-4"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- B. SMART PROPERTY PRICE ESTIMATOR -->
+        <div id="ai-panel-estimator" class="ai-panel hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <form onsubmit="calculatePriceEstimate(event)" class="lg:col-span-6 space-y-4">
+              <div class="flex items-center gap-2 text-navy-900 font-bold text-lg">
+                <i data-lucide="calculator" class="w-5 h-5 text-gold-600"></i>
+                <h3>Smart Property Price Estimator</h3>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-600">Estimate fair market valuation based on prime tier, area, property classification, age, and luxury amenities.</p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Location Tier</label>
+                  <select id="est-location" class="w-full px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 text-sm font-medium outline-none focus:border-gold-500">
+                    <option value="1.45" selected>Ultra-Prime (Beverly Hills / Manhattan)</option>
+                    <option value="1.25">Prime Metro (Miami / Aspen / Seattle)</option>
+                    <option value="1.05">Growth Hub (Austin / Scottsdale)</option>
+                    <option value="0.88">Suburban / Emerging Belt</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Property Type</label>
+                  <select id="est-type" class="w-full px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 text-sm font-medium outline-none focus:border-gold-500">
+                    <option value="Luxury Villa" selected>Luxury Villa</option>
+                    <option value="Modern Apartment">Modern Apartment</option>
+                    <option value="Independent House">Independent House</option>
+                    <option value="Residential Plot">Residential Plot</option>
+                    <option value="Commercial Building">Commercial Building</option>
+                    <option value="Farmhouse">Farmhouse</option>
+                    <option value="Studio Apartment">Studio Apartment</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Property Area (sq.ft.)</label>
+                  <input id="est-area" type="number" value="3200" min="250" max="50000" required class="w-full px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 text-sm font-medium outline-none focus:border-gold-500" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Property Age (Years)</label>
+                  <input id="est-age" type="number" value="2" min="0" max="100" required class="w-full px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 text-sm font-medium outline-none focus:border-gold-500" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase text-navy-800 mb-1.5">Value-Add Facilities</label>
+                <div class="flex flex-wrap gap-2 text-xs">
+                  <label class="px-3 py-1.5 rounded-xl bg-slateLight-50 border border-slate-200 flex items-center gap-1.5 cursor-pointer">
+                    <input type="checkbox" class="est-amenity" value="0.08" checked /> Pool (+8%)
+                  </label>
+                  <label class="px-3 py-1.5 rounded-xl bg-slateLight-50 border border-slate-200 flex items-center gap-1.5 cursor-pointer">
+                    <input type="checkbox" class="est-amenity" value="0.06" checked /> Smart Home (+6%)
+                  </label>
+                  <label class="px-3 py-1.5 rounded-xl bg-slateLight-50 border border-slate-200 flex items-center gap-1.5 cursor-pointer">
+                    <input type="checkbox" class="est-amenity" value="0.05" /> Solar & Eco (+5%)
+                  </label>
+                  <label class="px-3 py-1.5 rounded-xl bg-slateLight-50 border border-slate-200 flex items-center gap-1.5 cursor-pointer">
+                    <input type="checkbox" class="est-amenity" value="0.07" /> Panoramic View (+7%)
+                  </label>
+                </div>
+              </div>
+
+              <button type="submit" class="px-6 py-3 rounded-xl bg-gradient-to-r from-gold-400 to-gold-500 text-navy-950 font-bold text-sm shadow-gold-glow hover:from-gold-500 hover:to-gold-600 transition-all">
+                Generate Valuation Estimate
+              </button>
+            </form>
+
+            <!-- Valuation Output Card -->
+            <div id="estimator-result-card" class="lg:col-span-6 bg-navy-900 text-white rounded-3xl p-6 sm:p-8 border border-gold-500/30 shadow-xl">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- D. 360° VIRTUAL PROPERTY TOUR -->
+        <div id="ai-panel-tour360" class="ai-panel hidden">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
+            <div>
+              <h3 class="font-display text-2xl font-bold text-navy-900">360° Virtual Property Tour</h3>
+              <p class="text-xs sm:text-sm text-slate-600">Drag horizontally across the panoramic view or use room & angle controls to inspect spaces.</p>
+            </div>
+            <!-- Room Switcher Pills -->
+            <div id="tour360-rooms" class="flex flex-wrap gap-1.5">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div id="pano-viewport" onmousedown="startPanoDrag(event)" ontouchstart="startPanoDrag(event)" class="pano-stage rounded-2xl h-[340px] sm:h-[440px] border-2 border-navy-900/15 bg-navy-950 shadow-inner">
+            <img id="pano-image" src="" onerror="this.src='https://placehold.co/1400x700/112240/D4AF37?text=360+Panoramic+View'" alt="360 degree room view" class="w-full h-full object-cover transition-transform duration-150 scale-125 pointer-events-none" />
+            <div class="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-transparent to-navy-950/35 pointer-events-none"></div>
+
+            <!-- Top Overlay Badge -->
+            <div class="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
+              <span id="pano-room-badge" class="px-3.5 py-1.5 rounded-xl glass-navy text-gold-400 text-xs font-bold uppercase tracking-wider"></span>
+              <span id="pano-yaw-badge" class="px-3 py-1.5 rounded-xl glass-navy text-white text-xs font-mono">Pan: 0°</span>
+            </div>
+
+            <!-- Interactive Hotspot Callout -->
+            <div id="pano-hotspot" class="absolute bottom-20 left-1/2 -translate-x-1/2 px-4 py-2 rounded-2xl bg-gold-500 text-navy-950 text-xs font-bold shadow-lg flex items-center gap-2 pointer-events-none">
+              <i data-lucide="scan-eye" class="w-4 h-4"></i>
+              <span id="pano-hotspot-text">Architectural Highlight</span>
+            </div>
+
+            <!-- Bottom Controls -->
+            <div class="absolute bottom-4 inset-x-4 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="pan360(-25)" class="px-3 py-2 rounded-xl glass-navy hover:bg-navy-800 text-white text-xs font-semibold flex items-center gap-1">
+                  <i data-lucide="chevron-left" class="w-4 h-4"></i> Left
+                </button>
+                <button type="button" onclick="pan360(25)" class="px-3 py-2 rounded-xl glass-navy hover:bg-navy-800 text-white text-xs font-semibold flex items-center gap-1">
+                  Right <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+              </div>
+              <p id="pano-description" class="hidden sm:block text-xs text-slate-200 max-w-md text-right"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- E. PROPERTY COMPARISON TOOL -->
+        <div id="ai-panel-compare" class="ai-panel hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+            <div>
+              <h3 class="font-display text-2xl font-bold text-navy-900">Side-by-Side Property Comparison</h3>
+              <p class="text-xs sm:text-sm text-slate-600">Select up to 3 properties using the "Compare" toggle on cards or add them below.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <select id="compare-add-select" class="px-3 py-2 rounded-xl bg-slateLight-50 border border-slate-200 text-xs sm:text-sm font-medium text-navy-900">
+                <!-- Populated by JS -->
+              </select>
+              <button type="button" onclick="addSelectedFromDropdownToCompare()" class="px-4 py-2 rounded-xl bg-navy-900 text-gold-400 text-xs sm:text-sm font-bold hover:bg-navy-800">
+                + Add
+              </button>
+            </div>
+          </div>
+          <div id="ai-compare-table-wrapper" class="overflow-x-auto"></div>
+        </div>
+
+        <!-- F. SMART MORTGAGE CALCULATOR -->
+        <div id="ai-panel-mortgage" class="ai-panel hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div class="lg:col-span-6 space-y-4">
+              <h3 class="font-display text-2xl font-bold text-navy-900">Smart Mortgage & EMI Calculator</h3>
+              <p class="text-xs sm:text-sm text-slate-600">Plan your monthly repayment schedule with instant EMI, interest cost, and principal breakdown.</p>
+
+              <div>
+                <div class="flex justify-between text-xs font-bold uppercase text-navy-800 mb-1">
+                  <span>Property Price ($)</span>
+                  <span id="mort-price-label" class="text-gold-600 font-mono">$1,850,000</span>
+                </div>
+                <input id="mort-price" type="range" min="150000" max="15000000" step="25000" value="1850000" oninput="calculateMortgage()" class="w-full accent-navy-900" />
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Down Payment (%)</label>
+                  <input id="mort-down-pct" type="number" min="5" max="90" step="5" value="20" oninput="calculateMortgage()" class="w-full px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 text-sm font-semibold outline-none focus:border-gold-500" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Interest Rate (% / yr)</label>
+                  <input id="mort-rate" type="number" min="1" max="20" step="0.1" value="6.4" oninput="calculateMortgage()" class="w-full px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 text-sm font-semibold outline-none focus:border-gold-500" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Loan Tenure (Years)</label>
+                <select id="mort-years" onchange="calculateMortgage()" class="w-full px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 text-sm font-semibold outline-none focus:border-gold-500">
+                  <option value="10">10 Years</option>
+                  <option value="15">15 Years</option>
+                  <option value="20">20 Years</option>
+                  <option value="25">25 Years</option>
+                  <option value="30" selected>30 Years</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="mortgage-summary-card" class="lg:col-span-6 bg-slateLight-50 rounded-3xl p-6 sm:p-8 border border-slate-200">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- G. LOCATION INTELLIGENCE -->
+        <div id="ai-panel-location" class="ai-panel hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <h3 class="font-display text-2xl font-bold text-navy-900">Neighborhood & Location Intelligence</h3>
+              <p class="text-xs sm:text-sm text-slate-600">Inspect proximity to schools, colleges, hospitals, dining, shopping malls, parks, and transit hubs.</p>
+            </div>
+            <select id="loc-intel-city" onchange="renderLocationIntelligence()" class="px-4 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 text-sm font-semibold text-navy-900">
+              <option value="Beverly Hills, CA">Beverly Hills, CA</option>
+              <option value="Miami Beach, FL">Miami Beach, FL</option>
+              <option value="Manhattan, NY">Manhattan, NY</option>
+              <option value="Austin, TX">Austin, TX</option>
+            </select>
+          </div>
+          <div id="loc-intel-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- H. SMART PROPERTY ALERTS -->
+        <div id="ai-panel-alerts" class="ai-panel hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <form onsubmit="createPropertyAlert(event)" class="lg:col-span-5 space-y-4 bg-slateLight-50 p-5 sm:p-6 rounded-2xl border border-slate-200">
+              <h3 class="font-display text-xl font-bold text-navy-900 flex items-center gap-2">
+                <i data-lucide="bell-ring" class="w-5 h-5 text-gold-600"></i> Create Smart Property Alert
+              </h3>
+              <p class="text-xs text-slate-600">Get instant notifications when new listings match your criteria or prices drop.</p>
+
+              <div>
+                <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Target City / Area</label>
+                <input id="alert-city" type="text" required placeholder="e.g. Miami Beach, FL" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Property Type</label>
+                  <select id="alert-type" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500">
+                    <option value="All">Any Type</option>
+                    <option value="Luxury Villa">Luxury Villa</option>
+                    <option value="Modern Apartment">Modern Apartment</option>
+                    <option value="Independent House">Independent House</option>
+                    <option value="Farmhouse">Farmhouse</option>
+                    <option value="Studio Apartment">Studio Apartment</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Max Price ($)</label>
+                  <input id="alert-max-price" type="number" required value="2500000" min="1000" step="1000" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-3 rounded-xl bg-navy-900 hover:bg-navy-800 text-gold-400 font-bold text-sm shadow transition-all">
+                Activate Smart Alert
+              </button>
+            </form>
+
+            <div class="lg:col-span-7">
+              <h4 class="font-display text-xl font-bold text-navy-900 mb-4">Active Property Alerts</h4>
+              <div id="active-alerts-list" class="space-y-3"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== SELL / LIST YOUR PROPERTY SECTION ==================== -->
+    <section id="sell-section" class="py-14 sm:py-20 bg-white border-y border-slate-200">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+          <span class="text-xs font-bold uppercase tracking-[0.2em] text-gold-600 block mb-2">Owner & Seller Portal</span>
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-navy-900">List & Sell Your Property</h2>
+          <p class="text-slate-600 mt-1.5 text-sm sm:text-base">
+            Submit property details, upload architectural photos, and publish directly to our verified catalog.
+          </p>
+        </div>
+
+        <form id="list-property-form" onsubmit="handlePropertySubmission(event)" class="bg-slateLight-50 rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-luxury space-y-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase text-navy-800 mb-1.5">Property Name *</label>
+              <input id="sub-name" type="text" required placeholder="e.g. Villa Aurelia Crest" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase text-navy-800 mb-1.5">Property Category *</label>
+              <select id="sub-category" required class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500">
+                <option value="Luxury Villa">Luxury Villa</option>
+                <option value="Modern Apartment">Modern Apartment</option>
+                <option value="Independent House">Independent House</option>
+                <option value="Residential Plot">Residential Plot</option>
+                <option value="Commercial Building">Commercial Building</option>
+                <option value="Rental Property">Rental Property</option>
+                <option value="Farmhouse">Farmhouse</option>
+                <option value="Studio Apartment">Studio Apartment</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase text-navy-800 mb-1.5">Listing Mode *</label>
+              <select id="sub-mode" onchange="updatePriceLabelForMode()" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500">
+                <option value="Buy">For Sale (Buy)</option>
+                <option value="Rent">For Rent (Monthly)</option>
+                <option value="Sell">Direct Owner Sell</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase text-navy-800 mb-1.5">City & State *</label>
+              <input id="sub-location" type="text" required placeholder="e.g. Scottsdale, AZ" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-navy-800 mb-1.5">Full Street Address *</label>
+              <input id="sub-address" type="text" required placeholder="e.g. 7420 Silverleaf Ridge Rd" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+            <div>
+              <label id="sub-price-label" class="block text-xs font-bold uppercase text-navy-800 mb-1.5">Selling Price ($) *</label>
+              <input id="sub-price" type="number" required min="500" step="100" placeholder="1450000" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-navy-800 mb-1.5">Area (sq.ft.) *</label>
+              <input id="sub-area" type="number" required min="150" step="10" placeholder="2800" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-navy-800 mb-1.5">Bedrooms</label>
+              <input id="sub-beds" type="number" min="0" max="20" value="3" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-navy-800 mb-1.5">Bathrooms</label>
+              <input id="sub-baths" type="number" min="0" max="20" value="3" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-navy-800 mb-1.5">Furnishing</label>
+              <select id="sub-furnished" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500">
+                <option value="Furnished">Furnished</option>
+                <option value="Semi-Furnished" selected>Semi-Furnished</option>
+                <option value="Unfurnished">Unfurnished</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase text-navy-800 mb-1.5">Parking Availability</label>
+              <input id="sub-parking" type="text" value="2 Covered Garage Spaces" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-navy-800 mb-1.5">Upload Property Images</label>
+              <input id="sub-images" type="file" accept="image/*" multiple onchange="previewUploadedImages(event)" class="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-navy-900 file:text-gold-400 file:font-semibold" />
+            </div>
+          </div>
+
+          <!-- Uploaded Image Previews -->
+          <div id="sub-image-previews" class="flex flex-wrap gap-3"></div>
+
+          <!-- Facilities Checkboxes -->
+          <div>
+            <label class="block text-xs font-bold uppercase text-navy-800 mb-2">Facilities & Amenities</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs sm:text-sm text-navy-800">
+              <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200 cursor-pointer">
+                <input type="checkbox" class="sub-facility" value="Swimming Pool" checked /> Swimming Pool
+              </label>
+              <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200 cursor-pointer">
+                <input type="checkbox" class="sub-facility" value="Smart Security" checked /> Smart Security
+              </label>
+              <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200 cursor-pointer">
+                <input type="checkbox" class="sub-facility" value="Private Gym" /> Private Gym
+              </label>
+              <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200 cursor-pointer">
+                <input type="checkbox" class="sub-facility" value="Landscaped Garden" /> Landscaped Garden
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase text-navy-800 mb-1.5">Property Description *</label>
+            <textarea id="sub-desc" rows="3" required placeholder="Highlight architectural finishes, natural light, views, and neighborhood perks..." class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500"></textarea>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+            <span class="text-xs text-slate-600 flex items-center gap-1.5">
+              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+              Listings are marked "New Listing & Verified" and added immediately for preview.
+            </span>
+            <button type="submit" class="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-2xl bg-navy-900 hover:bg-navy-800 text-gold-400 font-bold text-sm shadow-lg transition-all">
+              <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              <span>Submit for Verification</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ==================== CUSTOMER REVIEWS & TESTIMONIALS ==================== -->
+    <section id="reviews-section" class="py-14 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-[0.2em] text-gold-600 block mb-2">Client Stories</span>
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-navy-900">Verified Buyer & Renter Reviews</h2>
+        </div>
+
+        <!-- Slider Controls -->
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="prevTestimonial()" class="p-2.5 rounded-xl bg-white border border-slate-200 hover:border-gold-500 text-navy-900 shadow-sm" aria-label="Previous Testimonial">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+          </button>
+          <button type="button" onclick="toggleTestimonialAutoplay()" id="autoplay-toggle-btn" class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:border-gold-500 text-xs font-bold text-navy-900 shadow-sm">
+            Auto-Slide: ON
+          </button>
+          <button type="button" onclick="nextTestimonial()" class="p-2.5 rounded-xl bg-white border border-slate-200 hover:border-gold-500 text-navy-900 shadow-sm" aria-label="Next Testimonial">
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- Testimonial Slider Stage -->
+        <div id="testimonial-stage" onmouseenter="pauseTestimonialTemporarily(true)" onmouseleave="pauseTestimonialTemporarily(false)" class="lg:col-span-7 bg-navy-900 text-white rounded-3xl p-6 sm:p-8 border border-gold-500/25 shadow-luxury relative overflow-hidden">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Submit Customer Review Form -->
+        <form onsubmit="addCustomerReview(event)" class="lg:col-span-5 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+          <h3 class="font-display text-xl font-bold text-navy-900">Share Your Experience</h3>
+          <p class="text-xs text-slate-600">Bought, rented, or listed a property with DREAM HOMES? Leave a verified review.</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Your Name *</label>
+              <input id="rev-name" type="text" required placeholder="Elena Rostova" class="w-full px-3 py-2 rounded-xl bg-slateLight-50 border border-slate-200 text-sm outline-none focus:border-gold-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Rating</label>
+              <select id="rev-rating" class="w-full px-3 py-2 rounded-xl bg-slateLight-50 border border-slate-200 text-sm outline-none focus:border-gold-500">
+                <option value="5">★★★★★ (5.0)</option>
+                <option value="4">★★★★☆ (4.0)</option>
+                <option value="3">★★★☆☆ (3.0)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Property / Role *</label>
+            <input id="rev-role" type="text" required placeholder="Villa Buyer • Beverly Hills, CA" class="w-full px-3 py-2 rounded-xl bg-slateLight-50 border border-slate-200 text-sm outline-none focus:border-gold-500" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Your Review *</label>
+            <textarea id="rev-quote" rows="3" required placeholder="Smooth virtual tour, transparent pricing, and fast closing..." class="w-full px-3 py-2 rounded-xl bg-slateLight-50 border border-slate-200 text-sm outline-none focus:border-gold-500"></textarea>
+          </div>
+
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-gold-400 to-gold-500 text-navy-950 font-bold text-sm shadow hover:from-gold-500 hover:to-gold-600 transition-all">
+            Publish Customer Review
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ==================== USER DASHBOARD SECTION ==================== -->
+    <section id="dashboard-section" class="py-14 sm:py-20 bg-slateLight-100 border-t border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-gold-600 block mb-1">Personal Hub</span>
+            <h2 class="font-display text-3xl sm:text-4xl font-bold text-navy-900">Member Dashboard</h2>
+          </div>
+          <div class="flex items-center gap-3 bg-white px-4 py-2.5 rounded-2xl border border-slate-200 shadow-sm">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80" onerror="this.src='https://placehold.co/120x120/0A192F/D4AF37?text=DH'" alt="Member Avatar" class="w-10 h-10 rounded-full object-cover" />
+            <div>
+              <div id="dash-header-name" class="text-sm font-bold text-navy-900">Sophia Bennett</div>
+              <div id="dash-header-email" class="text-xs text-slate-500">sophia.bennett@example.com</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Tab Pills -->
+        <div class="flex gap-2 overflow-x-auto pb-3 mb-6">
+          <button onclick="switchDashboardTab('profile')" data-dashtab="profile" class="dash-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-navy-900 text-gold-400 whitespace-nowrap">My Profile</button>
+          <button onclick="switchDashboardTab('saved')" data-dashtab="saved" class="dash-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-navy-800 border border-slate-200 whitespace-nowrap">Saved Properties</button>
+          <button onclick="switchDashboardTab('recent')" data-dashtab="recent" class="dash-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-navy-800 border border-slate-200 whitespace-nowrap">Recently Viewed</button>
+          <button onclick="switchDashboardTab('inquiries')" data-dashtab="inquiries" class="dash-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-navy-800 border border-slate-200 whitespace-nowrap">My Inquiries</button>
+          <button onclick="switchDashboardTab('visits')" data-dashtab="visits" class="dash-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-navy-800 border border-slate-200 whitespace-nowrap">Scheduled Visits</button>
+          <button onclick="switchDashboardTab('searches')" data-dashtab="searches" class="dash-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-navy-800 border border-slate-200 whitespace-nowrap">Saved Searches</button>
+          <button onclick="switchDashboardTab('alerts')" data-dashtab="alerts" class="dash-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-navy-800 border border-slate-200 whitespace-nowrap">Property Alerts</button>
+          <button onclick="switchDashboardTab('settings')" data-dashtab="settings" class="dash-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-navy-800 border border-slate-200 whitespace-nowrap">Account Settings</button>
+        </div>
+
+        <div id="dashboard-content-box" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm min-h-[260px]">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CONTACT & APPOINTMENT SECTION ==================== -->
+    <section id="contact-section" class="py-14 sm:py-20 bg-white border-t border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="text-xs font-bold uppercase tracking-[0.2em] text-gold-600 block mb-2">Concierge & Visits</span>
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-navy-900">Contact Agents & Book a Visit</h2>
+          <p class="text-slate-600 mt-1.5 text-sm sm:text-base">
+            Connect directly with our senior property advisors via phone, WhatsApp, email, or schedule an in-person tour.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <!-- Left: Agents & Office Info -->
+          <div class="lg:col-span-5 space-y-5">
+            <!-- Advisor Card 1 -->
+            <div class="p-5 rounded-2xl bg-slateLight-50 border border-slate-200 flex items-center gap-4">
+              <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=160&q=80" onerror="this.src='https://placehold.co/160x160/0A192F/D4AF37?text=Agent'" alt="Marcus Sterling" class="w-16 h-16 rounded-2xl object-cover shrink-0" />
+              <div class="flex-1 min-w-0">
+                <h3 class="font-bold text-navy-900 text-base truncate">Marcus Sterling</h3>
+                <p class="text-xs text-slate-600">Senior Luxury Villa & Estate Advisor</p>
+                <div class="flex flex-wrap gap-2 mt-2.5">
+                  <a href="tel:+13105550194" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-navy-900 text-white text-xs font-semibold hover:bg-navy-800">
+                    <i data-lucide="phone" class="w-3.5 h-3.5 text-gold-400"></i> Call
+                  </a>
+                  <a href="https://wa.me/13105550194?text=Hello%20DREAM%20HOMES%2C%20I%20would%20like%20information%20on%20a%20property." target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700">
+                    <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> WhatsApp
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Advisor Card 2 -->
+            <div class="p-5 rounded-2xl bg-slateLight-50 border border-slate-200 flex items-center gap-4">
+              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=160&q=80" onerror="this.src='https://placehold.co/160x160/0A192F/D4AF37?text=Advisor'" alt="Claire Vance" class="w-16 h-16 rounded-2xl object-cover shrink-0" />
+              <div class="flex-1 min-w-0">
+                <h3 class="font-bold text-navy-900 text-base truncate">Claire Vance</h3>
+                <p class="text-xs text-slate-600">Penthouses, Rentals & Commercial Specialist</p>
+                <div class="flex flex-wrap gap-2 mt-2.5">
+                  <a href="tel:+13055550148" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-navy-900 text-white text-xs font-semibold hover:bg-navy-800">
+                    <i data-lucide="phone" class="w-3.5 h-3.5 text-gold-400"></i> Call
+                  </a>
+                  <a href="https://wa.me/13055550148?text=Hello%20DREAM%20HOMES%2C%20I%20want%20to%20schedule%20a%20property%20tour." target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700">
+                    <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> WhatsApp
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Flagship Office Location Card -->
+            <div class="p-5 rounded-2xl bg-navy-900 text-white border border-gold-500/25 space-y-2.5">
+              <div class="flex items-center gap-2 text-gold-400 font-bold text-sm">
+                <i data-lucide="building" class="w-4 h-4"></i>
+                <span>DREAM HOMES Flagship Gallery</span>
+              </div>
+              <p class="text-xs text-slate-300">450 N Rodeo Dr, Suite 300, Beverly Hills, CA 90210</p>
+              <p class="text-xs text-slate-300">Email: concierge@dreamhomes-luxury.example</p>
+              <p class="text-xs text-slate-400">Hours: Mon–Sat 9:00 AM – 7:00 PM • Sun by Appointment</p>
+            </div>
+          </div>
+
+          <!-- Right: Property Visit Booking & Email Inquiry Form -->
+          <form onsubmit="submitVisitOrContactForm(event)" class="lg:col-span-7 bg-slateLight-50 rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+            <h3 class="font-display text-2xl font-bold text-navy-900">Schedule a Property Visit / Send Inquiry</h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Your Full Name *</label>
+                <input id="visit-name" type="text" required placeholder="Alex Morgan" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Email Address *</label>
+                <input id="visit-email" type="email" required placeholder="alex@example.com" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Select Property</label>
+                <select id="visit-property-select" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500">
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Preferred Date *</label>
+                <input id="visit-date" type="date" required class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Time Slot</label>
+                <select id="visit-time" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500">
+                  <option value="10:00 AM">10:00 AM</option>
+                  <option value="01:00 PM">01:00 PM</option>
+                  <option value="04:00 PM" selected>04:00 PM</option>
+                  <option value="05:30 PM (Sunset)">05:30 PM (Sunset)</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase text-navy-800 mb-1">Message or Questions</label>
+              <textarea id="visit-message" rows="3" placeholder="Let us know if you prefer an in-person tour or private video walk-through..." class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:border-gold-500"></textarea>
+            </div>
+
+            <button type="submit" class="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-2xl bg-navy-900 hover:bg-navy-800 text-gold-400 font-bold text-sm shadow-lg transition-all">
+              <i data-lucide="calendar-check" class="w-4 h-4"></i>
+              <span>Confirm Visit & Send Inquiry</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-navy-950 text-slate-300 border-t border-gold-500/20 pt-14 pb-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-white/10">
+        <!-- Brand Column -->
+        <div class="space-y-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 text-navy-950 flex items-center justify-center">
+              <i data-lucide="crown" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <span class="font-display text-lg font-bold text-white tracking-wider">DREAM HOMES</span>
+              <span class="block text-[10px] uppercase tracking-widest text-gold-400">Find Your Perfect Property</span>
+            </div>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            A modern real estate platform uniting architectural residences, verified listings, interactive spatial maps, and AI-assisted property discovery.
+          </p>
+          <div class="flex items-center gap-2.5 pt-1">
+            <a href="#top" class="p-2 rounded-lg bg-navy-800 hover:bg-gold-500 hover:text-navy-950 transition-colors" aria-label="Instagram"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+            <a href="#top" class="p-2 rounded-lg bg-navy-800 hover:bg-gold-500 hover:text-navy-950 transition-colors" aria-label="LinkedIn"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+            <a href="#top" class="p-2 rounded-lg bg-navy-800 hover:bg-gold-500 hover:text-navy-950 transition-colors" aria-label="YouTube"><i data-lucide="youtube" class="w-4 h-4"></i></a>
+            <a href="#top" class="p-2 rounded-lg bg-navy-800 hover:bg-gold-500 hover:text-navy-950 transition-colors" aria-label="Globe"><i data-lucide="globe" class="w-4 h-4"></i></a>
+          </div>
+        </div>
+
+        <!-- Explore Links -->
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-3.5">Explore</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#top" class="hover:text-gold-400 transition-colors">About Us</a></li>
+            <li><a href="#properties-section" onclick="quickFilterByMode('Buy')" class="hover:text-gold-400 transition-colors">Buy Properties</a></li>
+            <li><a href="#properties-section" onclick="quickFilterByMode('Rent')" class="hover:text-gold-400 transition-colors">Rent Properties</a></li>
+            <li><a href="#sell-section" class="hover:text-gold-400 transition-colors">Sell Property</a></li>
+            <li><a href="#contact-section" class="hover:text-gold-400 transition-colors">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Smart Tools -->
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-3.5">Smart Tools</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#ai-suite-section" onclick="switchAiTab('finder')" class="hover:text-gold-400 transition-colors">AI Property Finder</a></li>
+            <li><a href="#ai-suite-section" onclick="switchAiTab('estimator')" class="hover:text-gold-400 transition-colors">Price Estimator</a></li>
+            <li><a href="#ai-suite-section" onclick="switchAiTab('mortgage')" class="hover:text-gold-400 transition-colors">Mortgage Calculator</a></li>
+            <li><a href="#map-section" class="hover:text-gold-400 transition-colors">Interactive Property Map</a></li>
+            <li><a href="#dashboard-section" class="hover:text-gold-400 transition-colors">Member Dashboard</a></li>
+          </ul>
+        </div>
+
+        <!-- Legal & Policies -->
+        <div>
+          <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-3.5">Legal & Policies</h4>
+          <ul class="space-y-2 text-xs">
+            <li><button type="button" onclick="openLegalModal('privacy')" class="hover:text-gold-400 transition-colors text-left">Privacy Policy</button></li>
+            <li><button type="button" onclick="openLegalModal('terms')" class="hover:text-gold-400 transition-colors text-left">Terms and Conditions</button></li>
+            <li><button type="button" onclick="openLegalModal('verification')" class="hover:text-gold-400 transition-colors text-left">Listing Verification Standards</button></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+        <p>© 2026 DREAM HOMES – Find Your Perfect Property. All rights reserved.</p>
+        <p class="text-slate-400">Demo Note: Sample listings, AI valuations, map markers, and neighborhood metrics are simulated for interactive exploration.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== PROPERTY DETAILS MODAL ==================== -->
+  <div id="property-modal" class="fixed inset-0 z-[70] hidden bg-navy-950/75 backdrop-blur-sm overflow-y-auto p-3 sm:p-6">
+    <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4">
+      <div id="property-modal-content">
+        <!-- Populated dynamically via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== COMPARISON MODAL ==================== -->
+  <div id="compare-modal" class="fixed inset-0 z-[70] hidden bg-navy-950/75 backdrop-blur-sm overflow-y-auto p-3 sm:p-6">
+    <div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl border border-slate-200 p-6 sm:p-8 my-4">
+      <div class="flex items-center justify-between pb-4 mb-6 border-b border-slate-200">
+        <div>
+          <h3 class="font-display text-2xl font-bold text-navy-900">Property Comparison Matrix</h3>
+          <p class="text-xs text-slate-600">Comparing up to 3 properties side-by-side</p>
+        </div>
+        <button onclick="closeCompareModal()" class="p-2 rounded-xl bg-slateLight-100 hover:bg-slate-200 text-navy-900">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div id="modal-compare-body" class="overflow-x-auto"></div>
+    </div>
+  </div>
+
+  <!-- ==================== LEGAL INFO MODAL ==================== -->
+  <div id="legal-modal" class="fixed inset-0 z-[80] hidden bg-navy-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="max-w-lg w-full bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-200">
+        <h3 id="legal-modal-title" class="font-display text-xl font-bold text-navy-900"></h3>
+        <button onclick="closeLegalModal()" class="p-1.5 rounded-lg bg-slateLight-100 hover:bg-slate-200 text-navy-900">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <p id="legal-modal-text" class="text-sm text-slate-600 leading-relaxed"></p>
+      <div class="mt-6 text-right">
+        <button onclick="closeLegalModal()" class="px-5 py-2 rounded-xl bg-navy-900 text-gold-400 text-xs font-bold">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FLOATING AI REAL ESTATE CHATBOT ==================== -->
+  <div id="chatbot-widget" class="fixed bottom-5 right-5 z-[60]">
+    <!-- Launcher Button -->
+    <button id="chatbot-toggle-btn" onclick="toggleChatbot()" class="inline-flex items-center gap-2.5 px-4 py-3.5 rounded-2xl bg-navy-900 hover:bg-navy-800 text-gold-400 border border-gold-500/50 shadow-luxury font-bold text-sm transition-all transform hover:scale-105">
+      <i data-lucide="bot" class="w-5 h-5"></i>
+      <span class="hidden sm:inline">Ask DREAM AI</span>
+    </button>
+
+    <!-- Chat Window -->
+    <div id="chatbot-window" class="hidden w-[92vw] sm:w-[390px] bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[78vh]">
+      <!-- Header -->
+      <div class="bg-navy-900 text-white px-4 py-3.5 flex items-center justify-between border-b border-gold-500/30">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-gold-500/20 border border-gold-400/40 flex items-center justify-center text-gold-400">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="text-sm font-bold text-white">DREAM HOMES AI Concierge</div>
+            <div class="text-[11px] text-emerald-400 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Online • Instant Property Help
+            </div>
+          </div>
+        </div>
+        <button onclick="toggleChatbot(false)" class="p-1.5 rounded-lg hover:bg-navy-800 text-slate-300 hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Quick Prompt Chips -->
+      <div class="px-3 py-2 bg-slateLight-50 border-b border-slate-200 flex gap-1.5 overflow-x-auto">
+        <button type="button" onclick="sendQuickPrompt('Show villas under $3M')" class="px-2.5 py-1 rounded-full bg-white border border-slate-200 hover:border-gold-500 text-[11px] font-semibold text-navy-800 whitespace-nowrap">Villas &lt; $3M</button>
+        <button type="button" onclick="sendQuickPrompt('Best rental apartments')" class="px-2.5 py-1 rounded-full bg-white border border-slate-200 hover:border-gold-500 text-[11px] font-semibold text-navy-800 whitespace-nowrap">Rental Homes</button>
+        <button type="button" onclick="sendQuickPrompt('How do I book a visit?')" class="px-2.5 py-1 rounded-full bg-white border border-slate-200 hover:border-gold-500 text-[11px] font-semibold text-navy-800 whitespace-nowrap">Book Visit</button>
+      </div>
+
+      <!-- Messages Feed -->
+      <div id="chatbot-messages" class="flex-1 p-4 space-y-3 overflow-y-auto bg-slateLight-50/60 text-xs sm:text-sm">
+        <div class="bg-white border border-slate-200 rounded-2xl rounded-tl-sm p-3 text-navy-900 shadow-xs">
+          Hello! I’m your <strong>DREAM HOMES AI Assistant</strong>. Ask me about property prices, locations, bedrooms, amenities, EMI estimates, or booking a private tour.
+        </div>
+      </div>
+
+      <!-- Input Box -->
+      <form onsubmit="handleChatbotSubmit(event)" class="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
+        <input id="chatbot-input" type="text" required placeholder="Ask about villas, rent, locations..." class="flex-1 px-3.5 py-2 rounded-xl bg-slateLight-50 border border-slate-200 text-xs sm:text-sm outline-none focus:border-gold-500" />
+        <button type="submit" class="p-2.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-gold-400 transition-colors" aria-label="Send Message">
+          <i data-lucide="send" class="w-4 h-4"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== APPLICATION JAVASCRIPT ==================== -->
+  <script>
+    /**
+     * DREAM HOMES – Find Your Perfect Property
+     * Complete interactive state, catalog, filters, map, AI tools, dashboard, and modals.
+     */
+
+    const CATEGORIES = [
+      'All',
+      'Luxury Villa',
+      'Modern Apartment',
+      'Independent House',
+      'Residential Plot',
+      'Commercial Building',
+      'Rental Property',
+      'Farmhouse',
+      'Studio Apartment'
+    ];
+
+    const INITIAL_PROPERTIES = [
+      {
+        id: 'prop-101',
+        name: 'Villa Solis Crest',
+        category: 'Luxury Villa',
+        mode: 'Buy',
+        location: 'Beverly Hills, CA',
+        address: '1180 Summit Ridge Way, Beverly Hills, CA 90210',
+        price: 4650000,
+        isRental: false,
+        beds: 5,
+        baths: 6,
+        area: 5400,
+        parking: '3-Car Subterranean Garage',
+        furnished: 'Furnished',
+        badge: 'Featured',
+        verified: true,
+        rating: 4.9,
+        reviewsCount: 34,
+        description: 'Contemporary architectural villa featuring floor-to-ceiling glass walls, cantilevered infinity pool, private cinema, and panoramic canyon views.',
+        facilities: ['Infinity Pool', 'Home Cinema', 'Smart Security', 'Wine Cellar', 'Private Gym'],
+        images: [
+          'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80'
+        ],
+        floorPlan: [
+          { room: 'Grand Living & Dining Pavilion', dims: '42 ft × 26 ft' },
+          { room: 'Primary Suite & Terrace', dims: '28 ft × 22 ft' },
+          { room: 'Chef Kitchen & Island', dims: '24 ft × 18 ft' },
+          { room: 'Guest Suites (4)', dims: '18 ft × 15 ft avg' }
+        ],
+        nearby: [
+          { place: 'Beverly Hills Prep Academy', type: 'School', dist: '0.8 mi' },
+          { place: 'Cedars-Sinai Medical Center', type: 'Hospital', dist: '2.1 mi' },
+          { place: 'Rodeo Collection Mall', type: 'Shopping Mall', dist: '1.4 mi' },
+          { place: 'Metro Wilshire Hub', type: 'Transit', dist: '2.6 mi' }
+        ],
+        agent: { name: 'Marcus Sterling', role: 'Senior Estate Advisor', phone: '+1 (310) 555-0194' },
+        mapPos: { x: 24, y: 30 }
+      },
+      {
+        id: 'prop-102',
+        name: 'Azure Bay Sky Residence',
+        category: 'Modern Apartment',
+        mode: 'Buy',
+        location: 'Miami Beach, FL',
+        address: '420 Collins Ocean Blvd, Apt 28B, Miami Beach, FL 33139',
+        price: 1890000,
+        isRental: false,
+        beds: 3,
+        baths: 3,
+        area: 2350,
+        parking: '2 Valet Bays',
+        furnished: 'Furnished',
+        badge: 'Verified Property',
+        verified: true,
+        rating: 4.8,
+        reviewsCount: 27,
+        description: 'High-floor ocean-breeze apartment with wrap-around balcony, Italian marble kitchen, concierge access, and private resort deck.',
+        facilities: ['Ocean Balcony', 'Resort Pool', 'Concierge', 'Fitness Club', 'Smart Security'],
+        images: [
+          'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80'
+        ],
+        floorPlan: [
+          { room: 'Living & Ocean Lounge', dims: '30 ft × 20 ft' },
+          { room: 'Primary Bedroom Suite', dims: '21 ft × 17 ft' },
+          { room: 'Secondary Bedrooms (2)', dims: '15 ft × 13 ft' }
+        ],
+        nearby: [
+          { place: 'Miami Beach Montessori', type: 'School', dist: '0.6 mi' },
+          { place: 'Mount Sinai Hospital', type: 'Hospital', dist: '1.7 mi' },
+          { place: 'Lincoln Road Promenade', type: 'Shopping Mall', dist: '0.9 mi' },
+          { place: 'Bayfront Trolley Stop', type: 'Transit', dist: '0.4 mi' }
+        ],
+        agent: { name: 'Claire Vance', role: 'Luxury Condo Specialist', phone: '+1 (305) 555-0148' },
+        mapPos: { x: 68, y: 38 }
+      },
+      {
+        id: 'prop-103',
+        name: 'Oakridge Heritage Manor',
+        category: 'Independent House',
+        mode: 'Buy',
+        location: 'Austin, TX',
+        address: '905 Oakridge Crest Dr, Austin, TX 78746',
+        price: 1320000,
+        isRental: false,
+        beds: 4,
+        baths: 3,
+        area: 3450,
+        parking: '2-Car Driveway + Garage',
+        furnished: 'Semi-Furnished',
+        badge: 'New Listing',
+        verified: true,
+        rating: 4.7,
+        reviewsCount: 19,
+        description: 'Warm modern-traditional independent house surrounded by mature live oaks, featuring a shaded courtyard, home office, and chef pantry.',
+        facilities: ['Landscaped Garden', 'Home Office', 'Outdoor Patio', 'Solar Ready', 'Smart Security'],
+        images: [
+          'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'
+        ],
+        floorPlan: [
+          { room: 'Great Room & Hearth', dims: '28 ft × 22 ft' },
+          { room: 'Primary Wing', dims: '22 ft × 16 ft' },
+          { room: 'Study & Guest Rooms', dims: '16 ft × 14 ft' }
+        ],
+        nearby: [
+          { place: 'Westlake Hills School', type: 'School', dist: '1.1 mi' },
+          { place: 'St. David’s Medical Hub', type: 'Hospital', dist: '3.2 mi' },
+          { place: 'Barton Creek Square', type: 'Shopping Mall', dist: '2.4 mi' },
+          { place: 'Express Transit Route 30', type: 'Transit', dist: '0.7 mi' }
+        ],
+        agent: { name: 'Marcus Sterling', role: 'Senior Estate Advisor', phone: '+1 (310) 555-0194' },
+        mapPos: { x: 46, y: 64 }
+      },
+      {
+        id: 'prop-104',
+        name: 'Veridian Ridge Estate Plot',
+        category: 'Residential Plot',
+        mode: 'Sell',
+        location: 'Scottsdale, AZ',
+        address: 'Parcel 18 Silverleaf North, Scottsdale, AZ 85255',
+        price: 780000,
+        isRental: false,
+        beds: 0,
+        baths: 0,
+        area: 14500,
+        parking: 'Custom Driveway Plan Included',
+        furnished: 'Unfurnished',
+        badge: 'Verified Property',
+        verified: true,
+        rating: 4.8,
+        reviewsCount: 14,
+        description: 'Cleared, build-ready desert-view residential land parcel with underground utilities, architectural approval guidelines, and gated access.',
+        facilities: ['Gated Entry', 'Utilities Ready', 'Mountain View', 'Approved Plans'],
+        images: [
+          'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80'
+        ],
+        floorPlan: [
+          { room: 'Build Envelope Zone', dims: '95 ft × 75 ft' },
+          { room: 'Courtyard & Pool Zone', dims: '55 ft × 40 ft' }
+        ],
+        nearby: [
+          { place: 'Scottsdale Preparatory', type: 'School', dist: '1.9 mi' },
+          { place: 'HonorHealth Scottsdale', type: 'Hospital', dist: '3.5 mi' },
+          { place: 'Kierland Commons', type: 'Shopping Mall', dist: '4.1 mi' },
+          { place: 'Loop 101 Corridor', type: 'Transit', dist: '1.5 mi' }
+        ],
+        agent: { name: 'Claire Vance', role: 'Land & Investment Specialist', phone: '+1 (305) 555-0148' },
+        mapPos: { x: 78, y: 68 }
+      },
+      {
+        id: 'prop-105',
+        name: 'Mercantile Crown Tower',
+        category: 'Commercial Building',
+        mode: 'Buy',
+        location: 'Manhattan, NY',
+        address: '590 Madison Innovation Ave, New York, NY 10022',
+        price: 8900000,
+        isRental: false,
+        beds: 0,
+        baths: 8,
+        area: 12800,
+        parking: 'Executive Garage & Loading Bay',
+        furnished: 'Semi-Furnished',
+        badge: 'Featured',
+        verified: true,
+        rating: 4.9,
+        reviewsCount: 22,
+        description: 'Boutique commercial building featuring double-height atrium lobby, flexible executive floorplates, fiber backbone, and rooftop terrace.',
+        facilities: ['24/7 Security', 'High-Speed Elevators', 'Rooftop Terrace', 'Backup Power'],
+        images: [
+          'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80'
+        ],
+        floorPlan: [
+          { room: 'Ground Atrium & Retail', dims: '60 ft × 45 ft' },
+          { room: 'Floors 2–4 Executive Suites', dims: '55 ft × 42 ft each' }
+        ],
+        nearby: [
+          { place: 'Baruch & Midtown Academy', type: 'School', dist: '0.9 mi' },
+          { place: 'NYU Langone Midtown', type: 'Hospital', dist: '1.2 mi' },
+          { place: 'Fifth Ave Plaza', type: 'Shopping Mall', dist: '0.3 mi' },
+          { place: 'Grand Central / Subway Hub', type: 'Transit', dist: '0.2 mi' }
+        ],
+        agent: { name: 'Marcus Sterling', role: 'Commercial Advisory Lead', phone: '+1 (310) 555-0194' },
+        mapPos: { x: 52, y: 22 }
+      },
+      {
+        id: 'prop-106',
+        name: 'Harborview Garden Residence',
+        category: 'Rental Property',
+        mode: 'Rent',
+        location: 'Seattle, WA',
+        address: '214 Elliott Bay Terrace, Seattle, WA 98121',
+        price: 4600,
+        isRental: true,
+        beds: 3,
+        baths: 2,
+        area: 1850,
+        parking: '2 Reserved Garage Spots',
+        furnished: 'Furnished',
+        badge: 'New Listing',
+        verified: true,
+        rating: 4.7,
+        reviewsCount: 16,
+        description: 'Move-in-ready rental residence overlooking Puget Sound with curated furnishings, sunlit dining room, in-unit laundry, and private deck.',
+        facilities: ['Furnished Turnkey', 'Sound View Deck', 'Gym Access', 'Pet Friendly'],
+        images: [
+          'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?auto=format&fit=crop&w=1200&q=80'
+        ],
+        floorPlan: [
+          { room: 'Living & Bay View Deck', dims: '24 ft × 18 ft' },
+          { room: 'Primary Bedroom', dims: '17 ft × 14 ft' },
+          { room: 'Guest Bedrooms (2)', dims: '13 ft × 12 ft' }
+        ],
+        nearby: [
+          { place: 'Queen Anne Elementary', type: 'School', dist: '0.7 mi' },
+          { place: 'Swedish First Hill', type: 'Hospital', dist: '1.8 mi' },
+          { place: 'Pacific Place Center', type: 'Shopping Mall', dist: '1.1 mi' },
+          { place: 'Light Rail & Ferry Pier', type: 'Transit', dist: '0.5 mi' }
+        ],
+        agent: { name: 'Claire Vance', role: 'Leasing & Rental Director', phone: '+1 (305) 555-0148' },
+        mapPos: { x: 18, y: 66 }
+      },
+      {
+        id: 'prop-107',
+        name: 'Meadowbrook Olive Farmhouse',
+        category: 'Farmhouse',
+        mode: 'Buy',
+        location: 'Aspen, CO',
+        address: '880 Meadowbrook Valley Rd, Aspen, CO 81611',
+        price: 3450000,
+        isRental: false,
+        beds: 4,
+        baths: 4,
+        area: 4200,
+        parking: '3-Car Barn & Mudroom',
+        furnished: 'Furnished',
+        badge: 'Featured',
+        verified: true,
+        rating: 4.9,
+        reviewsCount: 29,
+        description: 'Serene alpine-inspired farmhouse set on 3.5 acres with timber beams, wrap-around porch, outdoor fireplace, and orchard views.',
+        facilities: ['3.5 Acre Orchard', 'Outdoor Fireplace', 'Timber Beams', 'Spa Bath', 'Smart Security'],
+        images: [
+          'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=1200&q=80'
+        ],
+        floorPlan: [
+          { room: 'Great Hall & Fireplace', dims: '34 ft × 24 ft' },
+          { room: 'Country Kitchen & Pantry', dims: '22 ft × 18 ft' },
+          { room: 'Primary & 3 Suites', dims: '18 ft × 16 ft avg' }
+        ],
+        nearby: [
+          { place: 'Aspen Valley Day School', type: 'School', dist: '1.6 mi' },
+          { place: 'Aspen Valley Hospital', type: 'Hospital', dist: '2.3 mi' },
+          { place: 'Mill Street Plaza', type: 'Shopping Mall', dist: '2.0 mi' },
+          { place: 'Roaring Fork Shuttle', type: 'Transit', dist: '0.9 mi' }
+        ],
+        agent: { name: 'Marcus Sterling', role: 'Senior Estate Advisor', phone: '+1 (310) 555-0194' },
+        mapPos: { x: 35, y: 46 }
+      },
+      {
+        id: 'prop-108',
+        name: 'Lumina Lofts Studio',
+        category: 'Studio Apartment',
+        mode: 'Rent',
+        location: 'Manhattan, NY',
+        address: '142 Crosby Design Loft, New York, NY 10012',
+        price: 3150,
+        isRental: true,
+        beds: 1,
+        baths: 1,
+        area: 740,
+        parking: 'Nearby Garage Pass Available',
+        furnished: 'Furnished',
+        badge: 'Verified Property',
+        verified: true,
+        rating: 4.6,
+        reviewsCount: 41,
+        description: 'Sunlit designer studio featuring 11-foot ceilings, custom Murphy & lounge zone, sleek quartz kitchenette, and co-working lounge.',
+        facilities: ['Designer Furnished', 'Co-Working Lounge', 'Rooftop Deck', '24/7 Doorman'],
+        images: [
+          'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1200&q=80'
+        ],
+        floorPlan: [
+          { room: 'Open Living & Sleeping Loft', dims: '26 ft × 18 ft' },
+          { room: 'Kitchenette & Bath', dims: '14 ft × 10 ft' }
+        ],
+        nearby: [
+          { place: 'SoHo Arts Academy', type: 'School', dist: '0.5 mi' },
+          { place: 'Bellevue Medical Center', type: 'Hospital', dist: '1.5 mi' },
+          { place: 'Broadway Design Shops', type: 'Shopping Mall', dist: '0.2 mi' },
+          { place: 'Spring St Subway', type: 'Transit', dist: '0.15 mi' }
+        ],
+        agent: { name: 'Claire Vance', role: 'Leasing & Rental Director', phone: '+1 (305) 555-0148' },
+        mapPos: { x: 60, y: 54 }
+      }
+    ];
+
+    const TOUR_360_ROOMS = [
+      {
+        id: 'living',
+        name: 'Living Room',
+        hotspot: 'Double-Height Glass & Custom Travertine Fireplace',
+        description: 'Expansive living area bathed in natural daylight with automated shading and acoustic ceiling details.',
+        img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1500&q=85'
+      },
+      {
+        id: 'bedroom',
+        name: 'Master Bedroom',
+        hotspot: 'Private Morning Terrace & Walk-In Dressing Suite',
+        description: 'Tranquil primary suite crafted with warm oak paneling, ambient cove lighting, and garden access.',
+        img: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1500&q=85'
+      },
+      {
+        id: 'kitchen',
+        name: 'Modern Kitchen',
+        hotspot: 'Waterfall Quartz Island & Integrated Appliances',
+        description: 'Chef-grade culinary space with concealed cabinetry, induction cooktop, and breakfast bar seating.',
+        img: 'https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1500&q=85'
+      },
+      {
+        id: 'bathroom',
+        name: 'Luxury Bathroom',
+        hotspot: 'Freestanding Soaking Tub & Rain Walk-In Shower',
+        description: 'Spa-inspired bath finished in honed stone slabs, heated flooring, and brass fixtures.',
+        img: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=1500&q=85'
+      },
+      {
+        id: 'garden',
+        name: 'Landscaped Garden',
+        hotspot: 'Sunlit Courtyard, Native Flora & Lounge Pavilion',
+        description: 'Private outdoor sanctuary designed for effortless entertaining and peaceful mornings.',
+        img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1500&q=85'
+      },
+      {
+        id: 'balcony',
+        name: 'Sky Balcony',
+        hotspot: 'Panoramic Horizon View & Evening Lounge',
+        description: 'Elevated terrace offering sweeping sunset vistas and weather-resistant outdoor seating.',
+        img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1500&q=85'
+      }
+    ];
+
+    const LOCATION_INTEL_DATA = {
+      'Beverly Hills, CA': [
+        { category: 'Schools & Colleges', icon: 'graduation-cap', items: ['Beverly Hills Prep (0.8 mi)', 'UCLA Extension Hub (3.4 mi)'] },
+        { category: 'Hospitals', icon: 'heart-pulse', items: ['Cedars-Sinai Medical (2.1 mi)', 'Beverly Urgent Care (0.9 mi)'] },
+        { category: 'Restaurants & Cafés', icon: 'utensils', items: ['Maison Solis Bistro (0.5 mi)', 'Canyon Roastery (0.3 mi)'] },
+        { category: 'Shopping Centers', icon: 'shopping-bag', items: ['Rodeo Collection (1.4 mi)', 'Beverly Center (1.8 mi)'] },
+        { category: 'Parks & Recreation', icon: 'trees', items: ['Beverly Gardens Park (0.7 mi)', 'Coldwater Canyon Trail (1.6 mi)'] },
+        { category: 'Public Transit', icon: 'train-front', items: ['Metro Wilshire Line (2.6 mi)', 'Express Bus Stop (0.4 mi)'] }
+      ],
+      'Miami Beach, FL': [
+        { category: 'Schools & Colleges', icon: 'graduation-cap', items: ['Miami Beach Montessori (0.6 mi)', 'FIU Urban Studio (4.2 mi)'] },
+        { category: 'Hospitals', icon: 'heart-pulse', items: ['Mount Sinai Medical (1.7 mi)', 'South Beach Clinic (0.8 mi)'] },
+        { category: 'Restaurants & Cafés', icon: 'utensils', items: ['Coral Wave Dining (0.3 mi)', 'Espressivo Coastal Café (0.2 mi)'] },
+        { category: 'Shopping Centers', icon: 'shopping-bag', items: ['Lincoln Road Mall (0.9 mi)', 'Bal Harbour Shops (5.8 mi)'] },
+        { category: 'Parks & Recreation', icon: 'trees', items: ['South Pointe Park (1.2 mi)', 'Beachwalk Boardwalk (0.1 mi)'] },
+        { category: 'Public Transit', icon: 'train-front', items: ['Beach Trolley Route (0.2 mi)', 'Brightline Connector (4.9 mi)'] }
+      ],
+      'Manhattan, NY': [
+        { category: 'Schools & Colleges', icon: 'graduation-cap', items: ['SoHo Arts Academy (0.5 mi)', 'NYU & Midtown Campuses (1.1 mi)'] },
+        { category: 'Hospitals', icon: 'heart-pulse', items: ['NYU Langone Midtown (1.2 mi)', 'Bellevue Medical (1.5 mi)'] },
+        { category: 'Restaurants & Cafés', icon: 'utensils', items: ['Crosby Kitchen & Wine (0.2 mi)', 'Atelier Bakery (0.3 mi)'] },
+        { category: 'Shopping Centers', icon: 'shopping-bag', items: ['Fifth Ave Gallery (0.3 mi)', 'SoHo Flagship Row (0.4 mi)'] },
+        { category: 'Parks & Recreation', icon: 'trees', items: ['Madison Square Park (0.8 mi)', 'Washington Square (0.9 mi)'] },
+        { category: 'Public Transit', icon: 'train-front', items: ['Express Subway Lines (0.2 mi)', 'Grand Central Hub (0.3 mi)'] }
+      ],
+      'Austin, TX': [
+        { category: 'Schools & Colleges', icon: 'graduation-cap', items: ['Westlake Hills School (1.1 mi)', 'UT Austin Campus (4.5 mi)'] },
+        { category: 'Hospitals', icon: 'heart-pulse', items: ['St. David’s Medical Hub (3.2 mi)', 'Westlake Care Center (1.4 mi)'] },
+        { category: 'Restaurants & Cafés', icon: 'utensils', items: ['Oak & Ember Smokehouse (0.6 mi)', 'Hillside Coffee Bar (0.4 mi)'] },
+        { category: 'Shopping Centers', icon: 'shopping-bag', items: ['Barton Creek Square (2.4 mi)', 'Domain Northside (6.5 mi)'] },
+        { category: 'Parks & Recreation', icon: 'trees', items: ['Zilker Park & Trails (2.1 mi)', 'Redbud Isle Reserve (1.3 mi)'] },
+        { category: 'Public Transit', icon: 'train-front', items: ['Rapid Bus Corridor (0.7 mi)', 'Downtown Station (3.8 mi)'] }
+      ]
+    };
+
+    const INITIAL_REVIEWS = [
+      {
+        name: 'Jonathan Mercer',
+        role: 'Purchased Villa Solis Crest • Beverly Hills, CA',
+        rating: 5,
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80',
+        quote: 'The 360° room previews and transparent floor dimensions saved us weeks of travel. Our advisor arranged a private twilight tour within 24 hours.'
+      },
+      {
+        name: 'Priya Nair',
+        role: 'Rented Harborview Garden Residence • Seattle, WA',
+        rating: 5,
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80',
+        quote: 'Filtering by furnished status, transit proximity, and monthly budget was effortless. Every detail in the listing matched the actual home.'
+      },
+      {
+        name: 'David & Hannah Kim',
+        role: 'Sold Independent House • Austin, TX',
+        rating: 5,
+        avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=160&q=80',
+        quote: 'Using the Smart Price Estimator helped us position our home competitively. We received qualified viewing requests in the very first week.'
+      }
+    ];
+
+    // ==================== APPLICATION STATE ====================
+    const state = {
+      properties: [...INITIAL_PROPERTIES],
+      activeCategory: 'All',
+      searchMode: 'All',
+      searchFilters: {
+        location: '',
+        type: 'All',
+        minPrice: null,
+        maxPrice: null,
+        minBeds: 0,
+        minBaths: 0,
+        minArea: null,
+        furnished: 'Any',
+        mapBoundsOnly: false
+      },
+      savedIds: JSON.parse(localStorage.getItem('dh_saved') || '["prop-101","prop-102"]'),
+      compareIds: JSON.parse(localStorage.getItem('dh_compare') || '["prop-101","prop-102"]'),
+      recentIds: JSON.parse(localStorage.getItem('dh_recent') || '["prop-101"]'),
+      inquiries: JSON.parse(localStorage.getItem('dh_inquiries') || '[]'),
+      visits: JSON.parse(localStorage.getItem('dh_visits') || '[]'),
+      savedSearches: JSON.parse(localStorage.getItem('dh_searches') || '[]'),
+      alerts: JSON.parse(localStorage.getItem('dh_alerts') || '[{"id":"al-1","city":"Miami Beach, FL","type":"Modern Apartment","maxPrice":2200000}]'),
+      profile: JSON.parse(localStorage.getItem('dh_profile') || '{"name":"Sophia Bennett","email":"sophia.bennett@example.com","phone":"+1 (310) 555-0182","city":"Beverly Hills, CA","marketingOptIn":true}'),
+      reviews: [...INITIAL_REVIEWS],
+      testimonialIndex: 0,
+      testimonialAutoplay: true,
+      testimonialPaused: false,
+      selectedMapPropertyId: 'prop-101',
+      mapZoom: 1,
+      mapPan: { x: 0, y: 0 },
+      isPanningMap: false,
+      panStart: { x: 0, y: 0 },
+      activePois: { schools: true, hospitals: true, malls: false, transit: true },
+      tourRoomIndex: 0,
+      tourYaw: 0,
+      isDraggingPano: false,
+      panoDragStartX: 0,
+      uploadedPreviewUrls: [],
+      statsAnimated: false
+    };
+
+    function persistState() {
+      localStorage.setItem('dh_saved', JSON.stringify(state.savedIds));
+      localStorage.setItem('dh_compare', JSON.stringify(state.compareIds));
+      localStorage.setItem('dh_recent', JSON.stringify(state.recentIds));
+      localStorage.setItem('dh_inquiries', JSON.stringify(state.inquiries));
+      localStorage.setItem('dh_visits', JSON.stringify(state.visits));
+      localStorage.setItem('dh_searches', JSON.stringify(state.savedSearches));
+      localStorage.setItem('dh_alerts', JSON.stringify(state.alerts));
+      localStorage.setItem('dh_profile', JSON.stringify(state.profile));
+      updateHeaderCounters();
+    }
+
+    function updateHeaderCounters() {
+      const savedEl = document.getElementById('nav-saved-count');
+      const cmpEl = document.getElementById('nav-compare-count');
+      if (savedEl) savedEl.textContent = state.savedIds.length;
+      if (cmpEl) cmpEl.textContent = state.compareIds.length;
+    }
+
+    // ==================== TOAST NOTIFICATIONS ====================
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      const accent = type === 'success'
+        ? 'border-emerald-400 bg-navy-900 text-white'
+        : type === 'warning'
+        ? 'border-gold-400 bg-navy-900 text-gold-300'
+        : 'border-gold-500/50 bg-navy-900 text-white';
+
+      toast.className = `pointer-events-auto border-l-4 ${accent} rounded-2xl px-4 py-3 shadow-2xl text-xs sm:text-sm font-medium flex items-center justify-between gap-3 transition-all duration-300`;
+      toast.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white font-bold">✕</button>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(20px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3600);
+    }
+
+    // ==================== FORMATTING HELPERS ====================
+    function formatPrice(prop) {
+      if (prop.isRental || prop.mode === 'Rent') {
+        return `$${Number(prop.price).toLocaleString()} / mo`;
+      }
+      return `$${Number(prop.price).toLocaleString()}`;
+    }
+
+    function formatCurrency(num) {
+      return '$' + Math.round(Number(num) || 0).toLocaleString();
+    }
+
+    function renderStars(rating) {
+      const full = Math.round(rating);
+      return '★'.repeat(full) + '☆'.repeat(Math.max(0, 5 - full));
+    }
+
+    // ==================== NAVIGATION & MOBILE MENU ====================
+    function toggleMobileMenu() {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    }
+
+    function closeMobileMenu() {
+      document.getElementById('mobile-menu').classList.add('hidden');
+    }
+
+    function navigateToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function quickFilterByMode(mode) {
+      setSearchMode(mode);
+      applySearchFiltersFromInputs();
+    }
+
+    // ==================== ANIMATED STATISTICS ====================
+    function initStatsObserver() {
+      const bar = document.getElementById('stats-bar');
+      if (!bar) return;
+
+      const animateNumbers = () => {
+        if (state.statsAnimated) return;
+        state.statsAnimated = true;
+        bar.querySelectorAll('[data-target]').forEach((el) => {
+          const target = Number(el.dataset.target);
+          const suffix = el.dataset.suffix || '';
+          const duration = 1400;
+          const start = performance.now();
+
+          function step(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const current = Math.floor(eased * target);
+            el.textContent = current.toLocaleString() + suffix;
+            if (progress < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+        });
+      };
+
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            animateNumbers();
+            observer.disconnect();
+          }
+        }, { threshold: 0.25 });
+        observer.observe(bar);
+      } else {
+        animateNumbers();
+      }
+    }
+
+    // ==================== CATEGORIES & PROPERTY LISTINGS ====================
+    function renderCategoryTabs() {
+      const wrapper = document.getElementById('category-tabs');
+      wrapper.innerHTML = CATEGORIES.map((cat) => {
+        const active = state.activeCategory === cat;
+        const classes = active
+          ? 'bg-navy-900 text-gold-400 border-navy-900 shadow-md'
+          : 'bg-white text-navy-800 border-slate-200 hover:border-gold-500';
+        return `<button type="button" onclick="selectCategory('${cat.replace(/'/g, "\\'")}')" class="px-4 py-2 rounded-full text-xs sm:text-sm font-semibold border transition-all whitespace-nowrap ${classes}">${cat}</button>`;
+      }).join('');
+    }
+
+    function selectCategory(category) {
+      state.activeCategory = category;
+      renderCategoryTabs();
+      renderProperties();
+    }
+
+    function setSearchMode(mode) {
+      state.searchMode = mode;
+      document.querySelectorAll('.search-mode-btn').forEach((btn) => {
+        if (btn.dataset.mode === mode) {
+          btn.className = 'search-mode-btn px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-navy-900 text-white shadow-sm';
+        } else {
+          btn.className = 'search-mode-btn px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all text-navy-800 hover:bg-white';
+        }
+      });
+    }
+
+    function handleAdvancedSearch(event) {
+      event.preventDefault();
+      applySearchFiltersFromInputs();
+      saveCurrentSearchToHistory();
+      document.getElementById('properties-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function applySearchFiltersFromInputs() {
+      state.searchFilters = {
+        location: document.getElementById('search-location').value.trim().toLowerCase(),
+        type: document.getElementById('search-type').value,
+        minPrice: document.getElementById('search-min-price').value ? Number(document.getElementById('search-min-price').value) : null,
+        maxPrice: document.getElementById('search-max-price').value ? Number(document.getElementById('search-max-price').value) : null,
+        minBeds: Number(document.getElementById('search-beds').value || 0),
+        minBaths: Number(document.getElementById('search-baths').value || 0),
+        minArea: document.getElementById('search-size').value ? Number(document.getElementById('search-size').value) : null,
+        furnished: document.getElementById('search-furnished').value,
+        mapBoundsOnly: false
+      };
+
+      if (state.searchFilters.type !== 'All') {
+        state.activeCategory = state.searchFilters.type;
+        renderCategoryTabs();
+      }
+      renderProperties();
+      renderMapMarkers();
+    }
+
+    function resetSearchFilters() {
+      document.getElementById('advanced-search-form').reset();
+      state.activeCategory = 'All';
+      state.searchMode = 'All';
+      state.searchFilters = {
+        location: '',
+        type: 'All',
+        minPrice: null,
+        maxPrice: null,
+        minBeds: 0,
+        minBaths: 0,
+        minArea: null,
+        furnished: 'Any',
+        mapBoundsOnly: false
+      };
+      setSearchMode('All');
+      renderCategoryTabs();
+      renderProperties();
+      renderMapMarkers();
+      showToast('Filters reset to show all available properties.', 'info');
+    }
+
+    function saveCurrentSearchToHistory() {
+      const f = state.searchFilters;
+      const summaryParts = [
+        state.searchMode !== 'All' ? state.searchMode : null,
+        state.activeCategory !== 'All' ? state.activeCategory : null,
+        f.location ? `in "${f.location}"` : null,
+        f.maxPrice ? `up to ${formatCurrency(f.maxPrice)}` : null
+      ].filter(Boolean);
+      const label = summaryParts.length ? summaryParts.join(' • ') : 'All Properties Search';
+      state.savedSearches.unshift({
+        id: 'srch-' + Date.now(),
+        label,
+        date: new Date().toLocaleDateString()
+      });
+      state.savedSearches = state.savedSearches.slice(0, 10);
+      persistState();
+    }
+
+    function getFilteredProperties() {
+      const f = state.searchFilters;
+      return state.properties.filter((p) => {
+        if (state.activeCategory !== 'All' && p.category !== state.activeCategory) return false;
+        if (state.searchMode !== 'All' && p.mode !== state.searchMode) return false;
+        if (f.location && !p.location.toLowerCase().includes(f.location) && !p.address.toLowerCase().includes(f.location) && !p.name.toLowerCase().includes(f.location)) return false;
+        if (f.minPrice !== null && p.price < f.minPrice) return false;
+        if (f.maxPrice !== null && p.price > f.maxPrice) return false;
+        if (f.minBeds > 0 && p.beds < f.minBeds) return false;
+        if (f.minBaths > 0 && p.baths < f.minBaths) return false;
+        if (f.minArea !== null && p.area < f.minArea) return false;
+        if (f.furnished !== 'Any' && p.furnished !== f.furnished) return false;
+        if (f.mapBoundsOnly) {
+          const withinX = p.mapPos.x >= 15 && p.mapPos.x <= 82;
+          const withinY = p.mapPos.y >= 18 && p.mapPos.y <= 78;
+          if (!withinX || !withinY) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderProperties() {
+      const grid = document.getElementById('properties-grid');
+      const emptyBox = document.getElementById('empty-properties-state');
+      const counter = document.getElementById('results-counter');
+      const sortVal = document.getElementById('sort-properties').value;
+
+      let list = [...getFilteredProperties()];
+      if (sortVal === 'price-asc') list.sort((a, b) => a.price - b.price);
+      else if (sortVal === 'price-desc') list.sort((a, b) => b.price - a.price);
+      else if (sortVal === 'area-desc') list.sort((a, b) => b.area - a.area);
+      else if (sortVal === 'rating-desc') list.sort((a, b) => b.rating - a.rating);
+      else list.sort((a, b) => (b.badge === 'Featured' ? 1 : 0) - (a.badge === 'Featured' ? 1 : 0));
+
+      counter.textContent = `Showing ${list.length} ${list.length === 1 ? 'property' : 'properties'}`;
+
+      if (!list.length) {
+        grid.innerHTML = '';
+        emptyBox.classList.remove('hidden');
+        return;
+      }
+      emptyBox.classList.add('hidden');
+
+      grid.innerHTML = list.map((p) => {
+        const isSaved = state.savedIds.includes(p.id);
+        const isCompared = state.compareIds.includes(p.id);
+        const badgeStyle = p.badge === 'Featured'
+          ? 'bg-gold-500 text-navy-950'
+          : p.badge === 'New Listing'
+          ? 'bg-emerald-600 text-white'
+          : 'bg-navy-900 text-gold-300';
+
+        return `
+          <article class="property-card bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between shadow-sm">
+            <div>
+              <!-- Image Header -->
+              <div class="relative h-56 overflow-hidden bg-navy-900">
+                <img
+                  src="${p.images[0]}"
+                  onerror="this.src='https://placehold.co/800x500/112240/D4AF37?text=${encodeURIComponent(p.name)}'"
+                  alt="${p.name}"
+                  class="property-img w-full h-full object-cover"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-navy-950/25"></div>
+
+                <!-- Top Badges -->
+                <div class="absolute top-3.5 left-3.5 flex flex-wrap items-center gap-1.5">
+                  <span class="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${badgeStyle}">${p.badge}</span>
+                  <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-white/90 text-navy-900">${p.category}</span>
+                </div>
+
+                <!-- Top Right Save & Compare -->
+                <div class="absolute top-3.5 right-3.5 flex items-center gap-1.5">
+                  <button type="button" onclick="toggleCompareProperty('${p.id}')" title="Compare Property" class="p-2 rounded-xl backdrop-blur-md border transition-all ${isCompared ? 'bg-gold-500 text-navy-950 border-gold-400' : 'bg-navy-900/75 text-white border-white/20 hover:text-gold-400'}">
+                    <i data-lucide="scale" class="w-4 h-4"></i>
+                  </button>
+                  <button type="button" onclick="toggleSaveProperty('${p.id}')" title="Save to Favorites" class="p-2 rounded-xl backdrop-blur-md border transition-all ${isSaved ? 'bg-rose-600 text-white border-rose-500' : 'bg-navy-900/75 text-white border-white/20 hover:text-rose-400'}">
+                    <i data-lucide="heart" class="w-4 h-4 ${isSaved ? 'fill-current' : ''}"></i>
+                  </button>
+                </div>
+
+                <!-- Price & Rating Bottom Overlay -->
+                <div class="absolute bottom-3 left-3.5 right-3.5 flex items-end justify-between text-white">
+                  <div class="font-display text-2xl font-bold text-gold-300 drop-shadow">${formatPrice(p)}</div>
+                  <div class="px-2.5 py-1 rounded-lg bg-navy-950/80 text-xs font-semibold flex items-center gap-1">
+                    <span class="text-gold-400">${renderStars(p.rating).slice(0, 1)}</span>
+                    <span>${p.rating.toFixed(1)}</span>
+                    <span class="text-slate-400">(${p.reviewsCount})</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Body Content -->
+              <div class="p-5">
+                <div class="flex items-start justify-between gap-2">
+                  <h3 class="font-display text-xl font-bold text-navy-900 leading-snug">${p.name}</h3>
+                </div>
+                <p class="text-xs font-medium text-slate-500 flex items-center gap-1 mt-1">
+                  <i data-lucide="map-pin" class="w-3.5 h-3.5 text-gold-600 shrink-0"></i>
+                  <span>${p.location} • ${p.furnished}</span>
+                </p>
+
+                <!-- Key Specs Strip -->
+                <div class="grid grid-cols-3 gap-2 my-4 p-2.5 rounded-2xl bg-slateLight-50 border border-slate-100 text-center text-xs">
+                  <div>
+                    <span class="font-bold text-navy-900 block">${p.beds > 0 ? p.beds + ' Beds' : 'Plot/Comm'}</span>
+                    <span class="text-[11px] text-slate-500">${p.baths > 0 ? p.baths + ' Baths' : p.mode}</span>
+                  </div>
+                  <div class="border-x border-slate-200">
+                    <span class="font-bold text-navy-900 block">${Number(p.area).toLocaleString()}</span>
+                    <span class="text-[11px] text-slate-500">sq.ft.</span>
+                  </div>
+                  <div>
+                    <span class="font-bold text-navy-900 block truncate">${p.parking.split(' ')[0]}</span>
+                    <span class="text-[11px] text-slate-500">Parking</span>
+                  </div>
+                </div>
+
+                <p class="text-xs sm:text-sm text-slate-600 line-clamp-2 leading-relaxed">${p.description}</p>
+
+                <!-- Facilities Tags -->
+                <div class="flex flex-wrap gap-1.5 mt-3.5">
+                  ${p.facilities.slice(0, 3).map((fac) => `<span class="px-2.5 py-1 rounded-lg bg-slateLight-100 text-navy-800 text-[11px] font-semibold">${fac}</span>`).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Footer -->
+            <div class="px-5 pb-5 pt-2 flex items-center gap-2.5">
+              <button type="button" onclick="openPropertyModal('${p.id}')" class="flex-1 py-2.5 px-4 rounded-xl bg-navy-900 hover:bg-navy-800 text-gold-400 font-bold text-xs sm:text-sm transition-colors">
+                View Details
+              </button>
+              <button type="button" onclick="contactOwnerForProperty('${p.id}')" class="py-2.5 px-3.5 rounded-xl bg-slateLight-100 hover:bg-gold-500/20 text-navy-900 border border-slate-200 hover:border-gold-500 font-semibold text-xs sm:text-sm transition-colors">
+                Contact Owner
+              </button>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // ==================== SAVE, COMPARE & RECENTLY VIEWED ====================
+    function toggleSaveProperty(id) {
+      const idx = state.savedIds.indexOf(id);
+      if (idx > -1) {
+        state.savedIds.splice(idx, 1);
+        showToast('Removed from Saved Properties.', 'info');
+      } else {
+        state.savedIds.unshift(id);
+        showToast('Saved to your favorites!', 'success');
+      }
+      persistState();
+      renderProperties();
+      renderDashboard();
+    }
+
+    function toggleCompareProperty(id) {
+      const idx = state.compareIds.indexOf(id);
+      if (idx > -1) {
+        state.compareIds.splice(idx, 1);
+        showToast('Removed from comparison list.', 'info');
+      } else {
+        if (state.compareIds.length >= 3) {
+          showToast('You can compare up to 3 properties at once.', 'warning');
+          return;
+        }
+        state.compareIds.push(id);
+        showToast('Added to Property Comparison (up to 3).', 'success');
+      }
+      persistState();
+      renderProperties();
+      renderCompareTables();
+    }
+
+    function recordRecentlyViewed(id) {
+      state.recentIds = [id, ...state.recentIds.filter((item) => item !== id)].slice(0, 8);
+      persistState();
+      renderDashboard();
+    }
+
+    function contactOwnerForProperty(id) {
+      const prop = state.properties.find((p) => p.id === id);
+      if (!prop) return;
+      state.inquiries.unshift({
+        id: 'inq-' + Date.now(),
+        propertyName: prop.name,
+        agent: prop.agent.name,
+        phone: prop.agent.phone,
+        date: new Date().toLocaleDateString(),
+        status: 'Inquiry Sent'
+      });
+      persistState();
+      renderDashboard();
+      const sel = document.getElementById('visit-property-select');
+      if (sel) sel.value = prop.id;
+      document.getElementById('visit-message').value = `Hi ${prop.agent.name}, I would like more details about ${prop.name} in ${prop.location}.`;
+      document.getElementById('contact-section').scrollIntoView({ behavior: 'smooth' });
+      showToast(`Inquiry logged for ${prop.name} (${prop.agent.name}).`, 'success');
+    }
+
+    // ==================== PROPERTY DETAILS MODAL ====================
+    function openPropertyModal(id) {
+      const prop = state.properties.find((p) => p.id === id);
+      if (!prop) return;
+      recordRecentlyViewed(id);
+
+      const modal = document.getElementById('property-modal');
+      const container = document.getElementById('property-modal-content');
+      const primaryImg = prop.images[0];
+
+      container.innerHTML = `
+        <div class="relative bg-navy-900 text-white p-5 sm:p-7 flex items-start justify-between gap-4">
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="px-3 py-1 rounded-full bg-gold-500 text-navy-950 text-xs font-bold">${prop.badge}</span>
+              <span class="px-3 py-1 rounded-full bg-white/10 text-slate-200 text-xs font-semibold">${prop.category} • ${prop.mode}</span>
+            </div>
+            <h3 class="font-display text-2xl sm:text-3xl font-bold text-white">${prop.name}</h3>
+            <p class="text-xs sm:text-sm text-slate-300 mt-1 flex items-center gap-1.5">
+              <i data-lucide="map-pin" class="w-4 h-4 text-gold-400"></i> ${prop.address}
+            </p>
+          </div>
+          <div class="text-right shrink-0">
+            <div class="font-display text-2xl sm:text-3xl font-bold text-gold-400">${formatPrice(prop)}</div>
+            <button onclick="closePropertyModal()" class="mt-2 p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white" aria-label="Close Modal">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="p-5 sm:p-7 space-y-7">
+          <!-- Gallery with Zoom Toggle -->
+          <div class="space-y-3">
+            <div class="relative h-64 sm:h-96 rounded-2xl overflow-hidden bg-navy-950 border border-slate-200">
+              <img id="modal-main-img" src="${primaryImg}" onerror="this.src='https://placehold.co/1200x700/112240/D4AF37?text=Property+Gallery'" alt="${prop.name}" onclick="toggleModalImageZoom()" class="w-full h-full object-cover cursor-zoom-in transition-transform duration-300" />
+              <button type="button" onclick="toggleModalImageZoom()" class="absolute bottom-3 right-3 px-3 py-1.5 rounded-xl glass-navy text-white text-xs font-semibold flex items-center gap-1.5">
+                <i data-lucide="zoom-in" class="w-3.5 h-3.5 text-gold-400"></i> Click Image to Zoom
+              </button>
+            </div>
+            <div class="flex gap-2.5 overflow-x-auto pb-1">
+              ${prop.images.map((imgUrl, idx) => `
+                <button type="button" onclick="switchModalGalleryImage('${imgUrl.replace(/'/g, "\\'")}')" class="w-24 h-16 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-gold-500' : 'border-transparent'} shrink-0">
+                  <img src="${imgUrl}" onerror="this.src='https://placehold.co/200x140/112240/D4AF37?text=Photo'" alt="Thumbnail ${idx + 1}" class="w-full h-full object-cover" />
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Description & Specs -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-7 space-y-5">
+              <div>
+                <h4 class="font-display text-xl font-bold text-navy-900 mb-2">Property Overview</h4>
+                <p class="text-sm text-slate-600 leading-relaxed">${prop.description}</p>
+              </div>
+
+              <!-- Specifications Grid -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="p-3 rounded-2xl bg-slateLight-50 border border-slate-200">
+                  <div class="text-[11px] uppercase font-bold text-slate-500">Area</div>
+                  <div class="text-sm font-bold text-navy-900 mt-0.5">${Number(prop.area).toLocaleString()} sq.ft.</div>
+                </div>
+                <div class="p-3 rounded-2xl bg-slateLight-50 border border-slate-200">
+                  <div class="text-[11px] uppercase font-bold text-slate-500">Bed / Bath</div>
+                  <div class="text-sm font-bold text-navy-900 mt-0.5">${prop.beds} Bd / ${prop.baths} Ba</div>
+                </div>
+                <div class="p-3 rounded-2xl bg-slateLight-50 border border-slate-200">
+                  <div class="text-[11px] uppercase font-bold text-slate-500">Furnishing</div>
+                  <div class="text-sm font-bold text-navy-900 mt-0.5">${prop.furnished}</div>
+                </div>
+                <div class="p-3 rounded-2xl bg-slateLight-50 border border-slate-200">
+                  <div class="text-[11px] uppercase font-bold text-slate-500">Parking</div>
+                  <div class="text-sm font-bold text-navy-900 mt-0.5 truncate">${prop.parking}</div>
+                </div>
+              </div>
+
+              <!-- Floor Plan & Room Dimensions -->
+              <div>
+                <h4 class="font-display text-lg font-bold text-navy-900 mb-2.5">Floor Plan & Room Dimensions</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  ${prop.floorPlan.map((fp) => `
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-slateLight-50 border border-slate-200 text-xs sm:text-sm">
+                      <span class="font-semibold text-navy-900">${fp.room}</span>
+                      <span class="font-mono text-gold-700 font-bold">${fp.dims}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- Facilities -->
+              <div>
+                <h4 class="font-display text-lg font-bold text-navy-900 mb-2">Available Facilities</h4>
+                <div class="flex flex-wrap gap-2">
+                  ${prop.facilities.map((f) => `<span class="px-3 py-1.5 rounded-xl bg-navy-900 text-gold-300 text-xs font-semibold">${f}</span>`).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Nearby POIs, Map Link & Schedule Visit -->
+            <div class="lg:col-span-5 space-y-5">
+              <div class="p-4 rounded-2xl bg-slateLight-50 border border-slate-200 space-y-2.5">
+                <h4 class="font-bold text-navy-900 text-sm flex items-center gap-1.5">
+                  <i data-lucide="compass" class="w-4 h-4 text-gold-600"></i> Nearby Landmarks & Transit
+                </h4>
+                ${prop.nearby.map((n) => `
+                  <div class="flex items-center justify-between text-xs py-1 border-b border-slate-200/70 last:border-0">
+                    <span class="font-medium text-navy-800">${n.place} <span class="text-slate-400">(${n.type})</span></span>
+                    <span class="font-bold text-navy-900">${n.dist}</span>
+                  </div>
+                `).join('')}
+                <div class="pt-2 flex gap-2">
+                  <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(prop.address)}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-xl bg-navy-900 text-gold-400 text-xs font-bold text-center hover:bg-navy-800">
+                    Get Directions (Maps)
+                  </a>
+                  <button type="button" onclick="closePropertyModal(); toggleCompareProperty('${prop.id}'); openCompareModal();" class="py-2 px-3 rounded-xl bg-white border border-slate-300 text-navy-900 text-xs font-bold hover:border-gold-500">
+                    Compare
+                  </button>
+                </div>
+              </div>
+
+              <!-- Owner / Agent Contact & Schedule Visit -->
+              <form onsubmit="bookVisitFromModal(event, '${prop.id}')" class="p-4 rounded-2xl bg-navy-900 text-white border border-gold-500/30 space-y-3">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="text-xs text-gold-400 font-bold uppercase">Listing Advisor</div>
+                    <div class="text-sm font-bold text-white">${prop.agent.name} • ${prop.agent.phone}</div>
+                  </div>
+                </div>
+                <input id="modal-visit-name" type="text" required placeholder="Your Name" class="w-full px-3 py-2 rounded-xl bg-navy-800 border border-white/15 text-xs text-white outline-none focus:border-gold-400" />
+                <div class="grid grid-cols-2 gap-2">
+                  <input id="modal-visit-date" type="date" required class="px-3 py-2 rounded-xl bg-navy-800 border border-white/15 text-xs text-white outline-none focus:border-gold-400" />
+                  <select id="modal-visit-time" class="px-3 py-2 rounded-xl bg-navy-800 border border-white/15 text-xs text-white outline-none focus:border-gold-400">
+                    <option value="11:00 AM">11:00 AM</option>
+                    <option value="03:00 PM" selected>03:00 PM</option>
+                    <option value="05:00 PM">05:00 PM</option>
+                  </select>
+                </div>
+                <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-gold-400 to-gold-500 text-navy-950 font-bold text-xs sm:text-sm shadow">
+                  Schedule a Property Visit
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      `;
+
+      modal.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closePropertyModal() {
+      document.getElementById('property-modal').classList.add('hidden');
+    }
+
+    function switchModalGalleryImage(url) {
+      const img = document.getElementById('modal-main-img');
+      if (img) {
+        img.src = url;
+        img.style.transform = 'scale(1)';
+      }
+    }
+
+    function toggleModalImageZoom() {
+      const img = document.getElementById('modal-main-img');
+      if (!img) return;
+      const zoomed = img.style.transform === 'scale(1.65)';
+      img.style.transform = zoomed ? 'scale(1)' : 'scale(1.65)';
+    }
+
+    function bookVisitFromModal(event, propId) {
+      event.preventDefault();
+      const prop = state.properties.find((p) => p.id === propId);
+      const name = document.getElementById('modal-visit-name').value.trim();
+      const date = document.getElementById('modal-visit-date').value;
+      const time = document.getElementById('modal-visit-time').value;
+      state.visits.unshift({
+        id: 'vis-' + Date.now(),
+        propertyName: prop ? prop.name : 'Property',
+        visitor: name,
+        date,
+        time,
+        status: 'Confirmed'
+      });
+      persistState();
+      renderDashboard();
+      closePropertyModal();
+      showToast(`Visit scheduled for ${prop.name} on ${date} at ${time}.`, 'success');
+    }
+
+    // ==================== INTERACTIVE PROPERTY MAP ====================
+    function renderMapMarkers() {
+      const container = document.getElementById('map-markers-container');
+      const poisContainer = document.getElementById('map-pois-container');
+      if (!container || !poisContainer) return;
+
+      const visibleProps = getFilteredProperties();
+      container.innerHTML = visibleProps.map((p) => {
+        const selected = p.id === state.selectedMapPropertyId;
+        const shortPrice = p.isRental ? `$${(p.price / 1000).toFixed(1)}k/m` : `$${(p.price / 1000000).toFixed(2)}M`;
+        return `
+          <button
+            type="button"
+            onmousedown="event.stopPropagation()"
+            onclick="selectMapProperty('${p.id}')"
+            style="left: ${p.mapPos.x}%; top: ${p.mapPos.y}%;"
+            class="absolute -translate-x-1/2 -translate-y-1/2 z-10 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg transition-all transform hover:scale-110 ${selected ? 'bg-gold-500 text-navy-950 ring-4 ring-navy-900/30 scale-110 z-20' : 'bg-navy-900 text-white hover:bg-navy-800'}"
+          >
+            ${shortPrice}
+          </button>
+        `;
+      }).join('');
+
+      const pois = [];
+      if (state.activePois.schools) pois.push({ x: 20, y: 22, label: 'School', color: 'bg-navy-700 text-white' });
+      if (state.activePois.hospitals) pois.push({ x: 74, y: 26, label: 'Hospital', color: 'bg-rose-600 text-white' });
+      if (state.activePois.malls) pois.push({ x: 63, y: 74, label: 'Mall', color: 'bg-amber-600 text-white' });
+      if (state.activePois.transit) pois.push({ x: 28, y: 78, label: 'Transit', color: 'bg-emerald-600 text-white' });
+
+      poisContainer.innerHTML = pois.map((poi) => `
+        <div style="left: ${poi.x}%; top: ${poi.y}%;" class="absolute -translate-x-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg ${poi.color} text-[10px] font-bold shadow">
+          ${poi.label}
+        </div>
+      `).join('');
+
+      renderMapSelectedCard();
+    }
+
+    function selectMapProperty(id) {
+      state.selectedMapPropertyId = id;
+      renderMapMarkers();
+    }
+
+    function renderMapSelectedCard() {
+      const card = document.getElementById('map-selected-card');
+      const prop = state.properties.find((p) => p.id === state.selectedMapPropertyId) || state.properties[0];
+      if (!card || !prop) return;
+
+      card.innerHTML = `
+        <div>
+          <div class="rounded-2xl overflow-hidden h-44 mb-4 bg-navy-900">
+            <img src="${prop.images[0]}" onerror="this.src='https://placehold.co/600x400/112240/D4AF37?text=Map+Preview'" alt="${prop.name}" class="w-full h-full object-cover" />
+          </div>
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-gold-600">${prop.category}</span>
+            <span class="text-xs font-bold text-navy-900">★ ${prop.rating}</span>
+          </div>
+          <h3 class="font-display text-xl font-bold text-navy-900 mt-1">${prop.name}</h3>
+          <p class="text-xs text-slate-600 mt-0.5">${prop.address}</p>
+          <div class="font-display text-2xl font-bold text-navy-900 mt-3">${formatPrice(prop)}</div>
+          <p class="text-xs text-slate-600 mt-2 line-clamp-2">${prop.description}</p>
+        </div>
+
+        <div class="pt-4 mt-4 border-t border-slate-200 flex flex-col gap-2">
+          <button type="button" onclick="openPropertyModal('${prop.id}')" class="w-full py-2.5 rounded-xl bg-navy-900 text-gold-400 font-bold text-xs sm:text-sm hover:bg-navy-800 transition-colors">
+            Inspect Property Details
+          </button>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(prop.address)}" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 rounded-xl bg-white border border-slate-300 text-navy-900 font-bold text-xs sm:text-sm text-center hover:border-gold-500 transition-colors flex items-center justify-center gap-1.5">
+            <i data-lucide="navigation" class="w-4 h-4 text-gold-600"></i> Get Directions
+          </a>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    function togglePoiLayer(key) {
+      state.activePois[key] = !state.activePois[key];
+      const btn = document.getElementById('poi-btn-' + key);
+      if (btn) {
+        btn.classList.toggle('border-gold-500', state.activePois[key]);
+        btn.classList.toggle('bg-gold-500/15', state.activePois[key]);
+      }
+      renderMapMarkers();
+    }
+
+    function adjustMapZoom(delta) {
+      state.mapZoom = Math.min(1.6, Math.max(0.8, Number((state.mapZoom + delta).toFixed(2))));
+      applyMapTransform();
+    }
+
+    function resetMapViewport() {
+      state.mapZoom = 1;
+      state.mapPan = { x: 0, y: 0 };
+      state.searchFilters.mapBoundsOnly = false;
+      applyMapTransform();
+      renderProperties();
+      showToast('Map viewport reset.', 'info');
+    }
+
+    function applyMapTransform() {
+      const layer = document.getElementById('map-pan-layer');
+      const label = document.getElementById('map-zoom-label');
+      if (layer) {
+        layer.style.transform = `translate(${state.mapPan.x}px, ${state.mapPan.y}px) scale(${state.mapZoom})`;
+      }
+      if (label) {
+        label.textContent = `Zoom: ${Math.round(state.mapZoom * 100)}% • Drag map to pan`;
+      }
+    }
+
+    function startMapPan(e) {
+      state.isPanningMap = true;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      state.panStart = { x: clientX - state.mapPan.x, y: clientY - state.mapPan.y };
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      if (state.isPanningMap) {
+        state.mapPan.x = Math.max(-140, Math.min(140, e.clientX - state.panStart.x));
+        state.mapPan.y = Math.max(-100, Math.min(100, e.clientY - state.panStart.y));
+        applyMapTransform();
+      }
+      if (state.isDraggingPano) {
+        const delta = (e.clientX - state.panoDragStartX) * 0.35;
+        state.panoDragStartX = e.clientX;
+        pan360(delta);
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      state.isPanningMap = false;
+      state.isDraggingPano = false;
+    });
+
+    function searchCurrentMapArea() {
+      state.searchFilters.mapBoundsOnly = true;
+      renderProperties();
+      showToast('Filtered listings within the central map zone.', 'success');
+    }
+
+    // ==================== AI SUITE TABS & TOOLS (A - H) ====================
+    function switchAiTab(tabKey) {
+      document.querySelectorAll('.ai-tab-btn').forEach((btn) => {
+        if (btn.dataset.aitab === tabKey) {
+          btn.className = 'ai-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all bg-navy-900 text-gold-400 shadow';
+        } else {
+          btn.className = 'ai-tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all bg-white text-navy-800 border border-slate-200 hover:border-gold-500';
+        }
+      });
+
+      document.querySelectorAll('.ai-panel').forEach((panel) => panel.classList.add('hidden'));
+      const activePanel = document.getElementById('ai-panel-' + tabKey);
+      if (activePanel) activePanel.classList.remove('hidden');
+
+      if (tabKey === 'compare') renderCompareTables();
+      if (tabKey === 'tour360') renderTour360Room();
+      if (tabKey === 'location') renderLocationIntelligence();
+      if (tabKey === 'alerts') renderAlertsList();
+      lucide.createIcons();
+    }
+
+    // A. AI Property Finder
+    function runAiPropertyFinder(event) {
+      if (event) event.preventDefault();
+      const loc = (document.getElementById('ai-finder-location')?.value || '').trim().toLowerCase();
+      const budget = Number(document.getElementById('ai-finder-budget')?.value || 5000000);
+      const family = Number(document.getElementById('ai-finder-family')?.value || 3);
+      const prefType = document.getElementById('ai-finder-type')?.value || 'Any';
+      const wantedFacs = Array.from(document.querySelectorAll('.ai-fac-check:checked')).map((c) => c.value.toLowerCase());
+
+      const minRecommendedBeds = family >= 5 ? 4 : family === 4 ? 3 : family === 3 ? 2 : 1;
+
+      const scored = state.properties.map((p) => {
+        let score = 55;
+        const reasons = [];
+
+        if (!loc || p.location.toLowerCase().includes(loc)) {
+          score += 15;
+          reasons.push(loc ? `Matches "${p.location}"` : 'Prime market location');
+        }
+        if (p.price <= budget) {
+          score += 15;
+          reasons.push(`Within ${formatCurrency(budget)} budget`);
+        } else {
+          score -= 12;
+        }
+        if (prefType === 'Any' || p.category === prefType) {
+          score += 10;
+          reasons.push(`${p.category} fit`);
+        }
+        if (p.beds >= minRecommendedBeds) {
+          score += 5;
+          reasons.push(`${p.beds} bedrooms suit family size`);
+        }
+
+        const facMatches = p.facilities.filter((f) => wantedFacs.some((w) => f.toLowerCase().includes(w)));
+        if (facMatches.length) {
+          score += facMatches.length * 4;
+          reasons.push(`Includes ${facMatches.join(', ')}`);
+        }
+
+        return { prop: p, score: Math.min(99, Math.max(40, score)), reasons };
+      }).sort((a, b) => b.score - a.score).slice(0, 3);
+
+      const container = document.getElementById('ai-finder-results');
+      container.innerHTML = scored.map(({ prop, score, reasons }) => `
+        <div class="p-4 rounded-2xl bg-slateLight-50 border border-slate-200 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div class="flex items-start sm:items-center gap-3.5">
+            <img src="${prop.images[0]}" onerror="this.src='https://placehold.co/160x120/112240/D4AF37?text=Match'" alt="${prop.name}" class="w-24 h-20 rounded-xl object-cover shrink-0" />
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-0.5 rounded-full bg-gold-500 text-navy-950 text-[11px] font-extrabold">${score}% Match</span>
+                <span class="font-display font-bold text-navy-900 text-base">${prop.name}</span>
+              </div>
+              <p class="text-xs text-slate-600 mt-0.5">${prop.location} • <strong>${formatPrice(prop)}</strong></p>
+              <p class="text-[11px] text-emerald-700 font-medium mt-1">✓ ${reasons.slice(0, 3).join(' • ')}</p>
+            </div>
+          </div>
+          <button type="button" onclick="openPropertyModal('${prop.id}')" class="px-4 py-2 rounded-xl bg-navy-900 text-gold-400 text-xs font-bold hover:bg-navy-800 shrink-0">
+            View
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // B. Smart Property Price Estimator
+    function calculatePriceEstimate(event) {
+      if (event) event.preventDefault();
+      const locMult = Number(document.getElementById('est-location').value);
+      const type = document.getElementById('est-type').value;
+      const area = Number(document.getElementById('est-area').value);
+      const age = Number(document.getElementById('est-age').value);
+      const amenityBonus = Array.from(document.querySelectorAll('.est-amenity:checked')).reduce((sum, el) => sum + Number(el.value), 0);
+
+      const baseRates = {
+        'Luxury Villa': 620,
+        'Modern Apartment': 490,
+        'Independent House': 410,
+        'Residential Plot': 140,
+        'Commercial Building': 580,
+        'Farmhouse': 440,
+        'Studio Apartment': 520
+      };
+
+      const baseRate = baseRates[type] || 420;
+      const ageFactor = Math.max(0.72, 1 - age * 0.012);
+      const effectiveRate = baseRate * locMult * ageFactor * (1 + amenityBonus);
+      const estimatedValue = area * effectiveRate;
+      const lowRange = estimatedValue * 0.92;
+      const highRange = estimatedValue * 1.08;
+
+      document.getElementById('estimator-result-card').innerHTML = `
+        <div class="text-xs font-bold uppercase tracking-widest text-gold-400">Estimated Market Valuation</div>
+        <div class="font-display text-3xl sm:text-4xl font-bold text-white mt-2">${formatCurrency(estimatedValue)}</div>
+        <p class="text-xs text-slate-300 mt-1">Likely Market Range: <strong>${formatCurrency(lowRange)}</strong> – <strong>${formatCurrency(highRange)}</strong></p>
+
+        <div class="grid grid-cols-2 gap-3 mt-6 pt-5 border-t border-white/10 text-xs">
+          <div class="p-3 rounded-2xl bg-navy-800">
+            <div class="text-slate-400">Est. Price / sq.ft.</div>
+            <div class="text-base font-bold text-gold-300 mt-0.5">${formatCurrency(effectiveRate)}</div>
+          </div>
+          <div class="p-3 rounded-2xl bg-navy-800">
+            <div class="text-slate-400">Amenity Uplift</div>
+            <div class="text-base font-bold text-emerald-400 mt-0.5">+${Math.round(amenityBonus * 100)}%</div>
+          </div>
+        </div>
+      `;
+    }
+
+    // C. AI Real Estate Chatbot
+    function toggleChatbot(forceOpen) {
+      const win = document.getElementById('chatbot-window');
+      const btn = document.getElementById('chatbot-toggle-btn');
+      const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : win.classList.contains('hidden');
+      if (shouldOpen) {
+        win.classList.remove('hidden');
+        btn.classList.add('hidden');
+      } else {
+        win.classList.add('hidden');
+        btn.classList.remove('hidden');
+      }
+      lucide.createIcons();
+    }
+
+    function sendQuickPrompt(text) {
+      appendChatMessage(text, 'user');
+      respondToChat(text);
+    }
+
+    function handleChatbotSubmit(event) {
+      event.preventDefault();
+      const input = document.getElementById('chatbot-input');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      appendChatMessage(text, 'user');
+      respondToChat(text);
+    }
+
+    function appendChatMessage(text, sender) {
+      const feed = document.getElementById('chatbot-messages');
+      const div = document.createElement('div');
+      if (sender === 'user') {
+        div.className = 'bg-navy-900 text-white rounded-2xl rounded-tr-sm p-3 ml-auto max-w-[85%] shadow-xs';
+      } else {
+        div.className = 'bg-white border border-slate-200 text-navy-900 rounded-2xl rounded-tl-sm p-3 mr-auto max-w-[88%] shadow-xs';
+      }
+      div.textContent = text;
+      feed.appendChild(div);
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function respondToChat(query) {
+      const q = query.toLowerCase();
+      let reply = '';
+
+      if (q.includes('villa') || q.includes('3m') || q.includes('price')) {
+        const villas = state.properties.filter((p) => p.category === 'Luxury Villa');
+        reply = `We currently feature ${villas.length} Luxury Villas, including ${villas.map((v) => `${v.name} (${formatPrice(v)} in ${v.location})`).join(' and ')}.`;
+      } else if (q.includes('rent') || q.includes('studio') || q.includes('apartment')) {
+        const rentals = state.properties.filter((p) => p.isRental || p.mode === 'Rent');
+        reply = `Available rental options include ${rentals.map((r) => `${r.name} at ${formatPrice(r)} in ${r.location}`).join(' and ')}.`;
+      } else if (q.includes('visit') || q.includes('book') || q.includes('tour')) {
+        reply = 'You can book an in-person or virtual tour directly inside any property’s "View Details" modal or in the Contact & Visits section below.';
+      } else if (q.includes('emi') || q.includes('mortgage') || q.includes('loan')) {
+        reply = 'Check out our Smart Mortgage & EMI Calculator in the AI Suite tab to model down payments, interest rates, and 10–30 year tenures.';
+      } else {
+        reply = `We have ${state.properties.length} active properties across villas, apartments, plots, commercial spaces, farmhouses, and rentals. Try asking about a city like Miami, Austin, or Manhattan!`;
+      }
+
+      setTimeout(() => appendChatMessage(reply, 'bot'), 260);
+    }
+
+    // D. 360° Virtual Property Tour
+    function renderTourRoomButtons() {
+      const wrap = document.getElementById('tour360-rooms');
+      wrap.innerHTML = TOUR_360_ROOMS.map((r, idx) => {
+        const active = idx === state.tourRoomIndex;
+        return `<button type="button" onclick="selectTourRoom(${idx})" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${active ? 'bg-navy-900 text-gold-400' : 'bg-slateLight-100 text-navy-800 hover:bg-slate-200'}">${r.name}</button>`;
+      }).join('');
+    }
+
+    function selectTourRoom(index) {
+      state.tourRoomIndex = index;
+      state.tourYaw = 0;
+      renderTourRoomButtons();
+      renderTour360Room();
+    }
+
+    function renderTour360Room() {
+      const room = TOUR_360_ROOMS[state.tourRoomIndex] || TOUR_360_ROOMS[0];
+      const img = document.getElementById('pano-image');
+      if (img) img.src = room.img;
+      document.getElementById('pano-room-badge').textContent = `360° View • ${room.name}`;
+      document.getElementById('pano-hotspot-text').textContent = room.hotspot;
+      document.getElementById('pano-description').textContent = room.description;
+      updatePanoTransform();
+      lucide.createIcons();
+    }
+
+    function pan360(deltaDeg) {
+      state.tourYaw = Math.round((state.tourYaw + deltaDeg) % 180);
+      updatePanoTransform();
+    }
+
+    function updatePanoTransform() {
+      const img = document.getElementById('pano-image');
+      const badge = document.getElementById('pano-yaw-badge');
+      if (img) {
+        const tx = state.tourYaw * 0.7;
+        img.style.transform = `scale(1.28) translateX(${tx}px)`;
+      }
+      if (badge) badge.textContent = `Pan: ${state.tourYaw}°`;
+    }
+
+    function startPanoDrag(e) {
+      state.isDraggingPano = true;
+      state.panoDragStartX = e.touches ? e.touches[0].clientX : e.clientX;
+    }
+
+    // E. Property Comparison Tool
+    function populateCompareDropdown() {
+      const sel = document.getElementById('compare-add-select');
+      if (!sel) return;
+      sel.innerHTML = state.properties.map((p) => `<option value="${p.id}">${p.name} (${formatPrice(p)})</option>`).join('');
+    }
+
+    function addSelectedFromDropdownToCompare() {
+      const id = document.getElementById('compare-add-select').value;
+      if (!state.compareIds.includes(id)) {
+        toggleCompareProperty(id);
+      } else {
+        showToast('Property is already in your comparison list.', 'info');
+      }
+    }
+
+    function openCompareModal() {
+      renderCompareTables();
+      document.getElementById('compare-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeCompareModal() {
+      document.getElementById('compare-modal').classList.add('hidden');
+    }
+
+    function buildComparisonHtml(props) {
+      if (!props.length) {
+        return `<div class="p-8 text-center bg-slateLight-50 rounded-2xl border border-slate-200 text-sm text-slate-600">No properties selected for comparison yet. Click the scale icon on any property card or add one above.</div>`;
+      }
+
+      const rows = [
+        { label: 'Price', fn: (p) => `<span class="font-bold text-navy-900">${formatPrice(p)}</span>` },
+        { label: 'Location', fn: (p) => p.location },
+        { label: 'Category', fn: (p) => p.category },
+        { label: 'Area', fn: (p) => `${Number(p.area).toLocaleString()} sq.ft.` },
+        { label: 'Bedrooms / Baths', fn: (p) => `${p.beds} Beds / ${p.baths} Baths` },
+        { label: 'Parking', fn: (p) => p.parking },
+        { label: 'Furnishing', fn: (p) => p.furnished },
+        { label: 'Rating', fn: (p) => `★ ${p.rating.toFixed(1)} (${p.reviewsCount})` },
+        { label: 'Key Facilities', fn: (p) => p.facilities.join(', ') }
+      ];
+
+      return `
+        <table class="w-full text-left border-collapse text-xs sm:text-sm">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="p-3 text-slate-500 font-bold uppercase text-xs w-40">Specification</th>
+              ${props.map((p) => `
+                <th class="p-3 min-w-[200px]">
+                  <div class="font-display text-base font-bold text-navy-900">${p.name}</div>
+                  <button type="button" onclick="toggleCompareProperty('${p.id}')" class="mt-1 text-[11px] text-rose-600 hover:underline font-semibold">Remove</button>
+                </th>
+              `).join('')}
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            ${rows.map((r) => `
+              <tr>
+                <td class="p-3 font-semibold text-navy-800 bg-slateLight-50/70">${r.label}</td>
+                ${props.map((p) => `<td class="p-3 text-slate-700">${r.fn(p)}</td>`).join('')}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderCompareTables() {
+      const selectedProps = state.properties.filter((p) => state.compareIds.includes(p.id)).slice(0, 3);
+      const html = buildComparisonHtml(selectedProps);
+      const aiWrap = document.getElementById('ai-compare-table-wrapper');
+      const modalWrap = document.getElementById('modal-compare-body');
+      if (aiWrap) aiWrap.innerHTML = html;
+      if (modalWrap) modalWrap.innerHTML = html;
+    }
+
+    // F. Smart Mortgage Calculator
+    function calculateMortgage() {
+      const priceInput = document.getElementById('mort-price');
+      if (!priceInput) return;
+      const principalFull = Number(priceInput.value);
+      const downPct = Math.min(90, Math.max(0, Number(document.getElementById('mort-down-pct').value || 20)));
+      const annualRate = Math.max(0.1, Number(document.getElementById('mort-rate').value || 6.5));
+      const years = Number(document.getElementById('mort-years').value || 30);
+
+      document.getElementById('mort-price-label').textContent = formatCurrency(principalFull);
+
+      const downPayment = principalFull * (downPct / 100);
+      const loanAmount = Math.max(0, principalFull - downPayment);
+      const monthlyRate = annualRate / 100 / 12;
+      const totalMonths = years * 12;
+
+      const emi = monthlyRate > 0
+        ? (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1)
+        : loanAmount / Math.max(1, totalMonths);
+
+      const totalPayable = emi * totalMonths;
+      const totalInterest = Math.max(0, totalPayable - loanAmount);
+      const principalSharePct = totalPayable > 0 ? Math.round((loanAmount / totalPayable) * 100) : 50;
+
+      document.getElementById('mortgage-summary-card').innerHTML = `
+        <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Estimated Monthly EMI</div>
+        <div class="font-display text-3xl sm:text-4xl font-bold text-navy-900 mt-1">${formatCurrency(emi)} <span class="text-sm font-sans font-normal text-slate-500">/ month</span></div>
+
+        <div class="grid grid-cols-2 gap-3 my-5 text-xs">
+          <div class="p-3.5 rounded-2xl bg-white border border-slate-200">
+            <span class="text-slate-500 block">Down Payment (${downPct}%)</span>
+            <strong class="text-sm text-navy-900">${formatCurrency(downPayment)}</strong>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-white border border-slate-200">
+            <span class="text-slate-500 block">Loan Principal</span>
+            <strong class="text-sm text-navy-900">${formatCurrency(loanAmount)}</strong>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-white border border-slate-200">
+            <span class="text-slate-500 block">Total Interest</span>
+            <strong class="text-sm text-amber-700">${formatCurrency(totalInterest)}</strong>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-white border border-slate-200">
+            <span class="text-slate-500 block">Total Loan Payable</span>
+            <strong class="text-sm text-navy-900">${formatCurrency(totalPayable)}</strong>
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <div class="flex justify-between text-xs font-semibold text-navy-800">
+            <span>Principal (${principalSharePct}%)</span>
+            <span>Interest (${100 - principalSharePct}%)</span>
+          </div>
+          <div class="w-full h-3 rounded-full bg-amber-400 overflow-hidden flex">
+            <div style="width: ${principalSharePct}%" class="bg-navy-900 h-full"></div>
+          </div>
+        </div>
+      `;
+    }
+
+    // G. Location Intelligence
+    function renderLocationIntelligence() {
+      const city = document.getElementById('loc-intel-city')?.value || 'Beverly Hills, CA';
+      const data = LOCATION_INTEL_DATA[city] || LOCATION_INTEL_DATA['Beverly Hills, CA'];
+      const grid = document.getElementById('loc-intel-grid');
+      if (!grid) return;
+
+      grid.innerHTML = data.map((block) => `
+        <div class="p-4 rounded-2xl bg-slateLight-50 border border-slate-200">
+          <div class="flex items-center gap-2 font-bold text-navy-900 text-sm mb-2.5">
+            <i data-lucide="${block.icon}" class="w-4 h-4 text-gold-600"></i>
+            <span>${block.category}</span>
+          </div>
+          <ul class="space-y-1.5 text-xs text-slate-700">
+            ${block.items.map((item) => `<li class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gold-500"></span>${item}</li>`).join('')}
+          </ul>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    // H. Smart Property Alerts
+    function createPropertyAlert(event) {
+      event.preventDefault();
+      const city = document.getElementById('alert-city').value.trim();
+      const type = document.getElementById('alert-type').value;
+      const maxPrice = Number(document.getElementById('alert-max-price').value);
+      state.alerts.unshift({
+        id: 'al-' + Date.now(),
+        city,
+        type,
+        maxPrice
+      });
+      persistState();
+      renderAlertsList();
+      renderDashboard();
+      event.target.reset();
+      showToast(`Smart alert activated for ${city}.`, 'success');
+    }
+
+    function removePropertyAlert(id) {
+      state.alerts = state.alerts.filter((a) => a.id !== id);
+      persistState();
+      renderAlertsList();
+      renderDashboard();
+    }
+
+    function renderAlertsList() {
+      const list = document.getElementById('active-alerts-list');
+      if (!list) return;
+      if (!state.alerts.length) {
+        list.innerHTML = `<div class="p-6 rounded-2xl bg-slateLight-50 border border-slate-200 text-xs text-slate-600">No active alerts yet. Create one on the left.</div>`;
+        return;
+      }
+      list.innerHTML = state.alerts.map((al) => `
+        <div class="p-4 rounded-2xl bg-slateLight-50 border border-slate-200 flex items-center justify-between gap-3">
+          <div>
+            <div class="text-sm font-bold text-navy-900">${al.city} • ${al.type}</div>
+            <div class="text-xs text-slate-600">Up to <strong>${formatCurrency(al.maxPrice)}</strong> • Instant price & listing alerts</div>
+          </div>
+          <button type="button" onclick="removePropertyAlert('${al.id}')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:border-rose-500 text-xs font-semibold text-rose-600">
+            Remove
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // ==================== SELL / LIST YOUR PROPERTY ====================
+    function updatePriceLabelForMode() {
+      const mode = document.getElementById('sub-mode').value;
+      const lbl = document.getElementById('sub-price-label');
+      lbl.textContent = mode === 'Rent' ? 'Monthly Rent ($) *' : 'Selling Price ($) *';
+    }
+
+    function previewUploadedImages(event) {
+      const files = Array.from(event.target.files || []).slice(0, 4);
+      const wrap = document.getElementById('sub-image-previews');
+      state.uploadedPreviewUrls = [];
+      wrap.innerHTML = '';
+
+      files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const url = e.target.result;
+          state.uploadedPreviewUrls.push(url);
+          const thumb = document.createElement('img');
+          thumb.src = url;
+          thumb.alt = file.name;
+          thumb.className = 'w-20 h-16 rounded-xl object-cover border border-gold-500';
+          wrap.appendChild(thumb);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function handlePropertySubmission(event) {
+      event.preventDefault();
+      const name = document.getElementById('sub-name').value.trim();
+      const category = document.getElementById('sub-category').value;
+      const mode = document.getElementById('sub-mode').value;
+      const location = document.getElementById('sub-location').value.trim();
+      const address = document.getElementById('sub-address').value.trim();
+      const price = Number(document.getElementById('sub-price').value);
+      const area = Number(document.getElementById('sub-area').value);
+      const beds = Number(document.getElementById('sub-beds').value || 0);
+      const baths = Number(document.getElementById('sub-baths').value || 0);
+      const furnished = document.getElementById('sub-furnished').value;
+      const parking = document.getElementById('sub-parking').value.trim() || 'Standard Parking';
+      const desc = document.getElementById('sub-desc').value.trim();
+      const facilities = Array.from(document.querySelectorAll('.sub-facility:checked')).map((c) => c.value);
+
+      const newProp = {
+        id: 'prop-' + Date.now(),
+        name,
+        category,
+        mode,
+        location,
+        address,
+        price,
+        isRental: mode === 'Rent',
+        beds,
+        baths,
+        area,
+        parking,
+        furnished,
+        badge: 'New Listing',
+        verified: true,
+        rating: 5.0,
+        reviewsCount: 1,
+        description: desc,
+        facilities: facilities.length ? facilities : ['Verified Deed', 'Prime Location'],
+        images: state.uploadedPreviewUrls.length
+          ? state.uploadedPreviewUrls
+          : ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'],
+        floorPlan: [
+          { room: 'Main Living & Dining', dims: '26 ft × 20 ft' },
+          { room: 'Primary Suite', dims: '20 ft × 16 ft' }
+        ],
+        nearby: [
+          { place: 'City Central School', type: 'School', dist: '1.0 mi' },
+          { place: 'Regional Medical Center', type: 'Hospital', dist: '2.2 mi' },
+          { place: 'Metro Plaza Mall', type: 'Shopping Mall', dist: '1.6 mi' }
+        ],
+        agent: { name: state.profile.name, role: 'Verified Property Owner', phone: state.profile.phone },
+        mapPos: {
+          x: Math.floor(20 + Math.random() * 60),
+          y: Math.floor(22 + Math.random() * 55)
+        }
+      };
+
+      state.properties.unshift(newProp);
+      state.uploadedPreviewUrls = [];
+      document.getElementById('sub-image-previews').innerHTML = '';
+      event.target.reset();
+      populatePropertySelects();
+      populateCompareDropdown();
+      renderProperties();
+      renderMapMarkers();
+      document.getElementById('properties-section').scrollIntoView({ behavior: 'smooth' });
+      showToast(`"${name}" verified and added to DREAM HOMES listings!`, 'success');
+    }
+
+    // ==================== TESTIMONIALS SLIDER & REVIEW FORM ====================
+    function renderTestimonial() {
+      const stage = document.getElementById('testimonial-stage');
+      if (!stage || !state.reviews.length) return;
+      const rev = state.reviews[state.testimonialIndex % state.reviews.length];
+
+      stage.innerHTML = `
+        <div class="relative z-10">
+          <div class="flex items-center justify-between gap-2 mb-5">
+            <span class="text-gold-400 text-lg tracking-wider">${renderStars(rev.rating)}</span>
+            <span class="text-xs text-slate-400">${(state.testimonialIndex % state.reviews.length) + 1} / ${state.reviews.length}</span>
+          </div>
+          <blockquote class="font-display text-xl sm:text-2xl text-white leading-relaxed italic">
+            “${rev.quote}”
+          </blockquote>
+          <div class="mt-6 pt-5 border-t border-white/10 flex items-center gap-3.5">
+            <img src="${rev.avatar}" onerror="this.src='https://placehold.co/120x120/112240/D4AF37?text=Client'" alt="${rev.name}" class="w-12 h-12 rounded-full object-cover border-2 border-gold-400" />
+            <div>
+              <div class="font-bold text-white text-sm sm:text-base">${rev.name}</div>
+              <div class="text-xs text-gold-300">${rev.role}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function nextTestimonial() {
+      state.testimonialIndex = (state.testimonialIndex + 1) % state.reviews.length;
+      renderTestimonial();
+    }
+
+    function prevTestimonial() {
+      state.testimonialIndex = (state.testimonialIndex - 1 + state.reviews.length) % state.reviews.length;
+      renderTestimonial();
+    }
+
+    function toggleTestimonialAutoplay() {
+      state.testimonialAutoplay = !state.testimonialAutoplay;
+      document.getElementById('autoplay-toggle-btn').textContent = `Auto-Slide: ${state.testimonialAutoplay ? 'ON' : 'OFF'}`;
+    }
+
+    function pauseTestimonialTemporarily(paused) {
+      state.testimonialPaused = paused;
+    }
+
+    function addCustomerReview(event) {
+      event.preventDefault();
+      const name = document.getElementById('rev-name').value.trim();
+      const rating = Number(document.getElementById('rev-rating').value);
+      const role = document.getElementById('rev-role').value.trim();
+      const quote = document.getElementById('rev-quote').value.trim();
+
+      state.reviews.unshift({
+        name,
+        role,
+        rating,
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80',
+        quote
+      });
+      state.testimonialIndex = 0;
+      renderTestimonial();
+      event.target.reset();
+      showToast('Thank you! Your review has been published.', 'success');
+    }
+
+    // ==================== USER DASHBOARD ====================
+    let activeDashboardTab = 'profile';
+
+    function scrollToDashboardTab(tab) {
+      switchDashboardTab(tab);
+      document.getElementById('dashboard-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function switchDashboardTab(tab) {
+      activeDashboardTab = tab;
+      document.querySelectorAll('.dash-tab-btn').forEach((btn) => {
+        if (btn.dataset.dashtab === tab) {
+          btn.className = 'dash-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-navy-900 text-gold-400 whitespace-nowrap';
+        } else {
+          btn.className = 'dash-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-navy-800 border border-slate-200 whitespace-nowrap';
+        }
+      });
+      renderDashboard();
+    }
+
+    function renderPropertyMiniList(ids, emptyText) {
+      const items = ids.map((id) => state.properties.find((p) => p.id === id)).filter(Boolean);
+      if (!items.length) return `<p class="text-sm text-slate-500">${emptyText}</p>`;
+      return `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${items.map((p) => `
+            <div class="p-4 rounded-2xl bg-slateLight-50 border border-slate-200 flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3 min-w-0">
+                <img src="${p.images[0]}" onerror="this.src='https://placehold.co/120x90/112240/D4AF37?text=Home'" alt="${p.name}" class="w-16 h-14 rounded-xl object-cover shrink-0" />
+                <div class="min-w-0">
+                  <div class="font-bold text-navy-900 text-sm truncate">${p.name}</div>
+                  <div class="text-xs text-slate-500 truncate">${p.location} • ${formatPrice(p)}</div>
+                </div>
+              </div>
+              <button type="button" onclick="openPropertyModal('${p.id}')" class="px-3 py-1.5 rounded-xl bg-navy-900 text-gold-400 text-xs font-bold shrink-0">Open</button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function renderDashboard() {
+      const box = document.getElementById('dashboard-content-box');
+      if (!box) return;
+
+      document.getElementById('dash-header-name').textContent = state.profile.name;
+      document.getElementById('dash-header-email').textContent = state.profile.email;
+
+      if (activeDashboardTab === 'profile') {
+        box.innerHTML = `
+          <h3 class="font-display text-xl font-bold text-navy-900 mb-3">Member Profile</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+            <div class="p-4 rounded-2xl bg-slateLight-50 border border-slate-200"><span class="text-xs text-slate-500 block">Full Name</span><strong>${state.profile.name}</strong></div>
+            <div class="p-4 rounded-2xl bg-slateLight-50 border border-slate-200"><span class="text-xs text-slate-500 block">Email</span><strong>${state.profile.email}</strong></div>
+            <div class="p-4 rounded-2xl bg-slateLight-50 border border-slate-200"><span class="text-xs text-slate-500 block">Preferred City</span><strong>${state.profile.city}</strong></div>
+          </div>
+        `;
+      } else if (activeDashboardTab === 'saved') {
+        box.innerHTML = `<h3 class="font-display text-xl font-bold text-navy-900 mb-4">Saved Properties (${state.savedIds.length})</h3>` + renderPropertyMiniList(state.savedIds, 'No saved properties yet. Click the heart icon on any listing.');
+      } else if (activeDashboardTab === 'recent') {
+        box.innerHTML = `<h3 class="font-display text-xl font-bold text-navy-900 mb-4">Recently Viewed Properties</h3>` + renderPropertyMiniList(state.recentIds, 'No recently viewed properties.');
+      } else if (activeDashboardTab === 'inquiries') {
+        box.innerHTML = `<h3 class="font-display text-xl font-bold text-navy-900 mb-4">My Property Inquiries (${state.inquiries.length})</h3>` + (
+          state.inquiries.length
+            ? `<div class="space-y-2.5">${state.inquiries.map((i) => `<div class="p-3.5 rounded-2xl bg-slateLight-50 border border-slate-200 flex justify-between items-center text-xs sm:text-sm"><div><strong>${i.propertyName}</strong> • Advisor: ${i.agent} (${i.phone})</div><span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs">${i.status}</span></div>`).join('')}</div>`
+            : `<p class="text-sm text-slate-500">No inquiries submitted yet.</p>`
+        );
+      } else if (activeDashboardTab === 'visits') {
+        box.innerHTML = `<h3 class="font-display text-xl font-bold text-navy-900 mb-4">Scheduled Property Visits (${state.visits.length})</h3>` + (
+          state.visits.length
+            ? `<div class="space-y-2.5">${state.visits.map((v) => `<div class="p-3.5 rounded-2xl bg-slateLight-50 border border-slate-200 flex flex-wrap justify-between items-center gap-2 text-xs sm:text-sm"><div><strong>${v.propertyName}</strong> • ${v.date} at ${v.time} (${v.visitor})</div><span class="px-2.5 py-1 rounded-full bg-gold-500/20 text-navy-900 font-bold text-xs">${v.status}</span></div>`).join('')}</div>`
+            : `<p class="text-sm text-slate-500">No property visits scheduled yet.</p>`
+        );
+      } else if (activeDashboardTab === 'searches') {
+        box.innerHTML = `<h3 class="font-display text-xl font-bold text-navy-900 mb-4">Saved Searches</h3>` + (
+          state.savedSearches.length
+            ? `<div class="space-y-2">${state.savedSearches.map((s) => `<div class="p-3 rounded-xl bg-slateLight-50 border border-slate-200 flex justify-between text-xs sm:text-sm"><span class="font-semibold text-navy-900">${s.label}</span><span class="text-slate-500">${s.date}</span></div>`).join('')}</div>`
+            : `<p class="text-sm text-slate-500">Run a search in the hero bar to log your search preferences here.</p>`
+        );
+      } else if (activeDashboardTab === 'alerts') {
+        box.innerHTML = `<h3 class="font-display text-xl font-bold text-navy-900 mb-4">Active Property Alerts (${state.alerts.length})</h3>` + (
+          state.alerts.length
+            ? `<div class="space-y-2">${state.alerts.map((a) => `<div class="p-3 rounded-xl bg-slateLight-50 border border-slate-200 flex justify-between items-center text-xs sm:text-sm"><span><strong>${a.city}</strong> • ${a.type} • Max ${formatCurrency(a.maxPrice)}</span><button onclick="removePropertyAlert('${a.id}')" class="text-rose-600 font-bold text-xs">Delete</button></div>`).join('')}</div>`
+            : `<p class="text-sm text-slate-500">No active property alerts.</p>`
+        );
+      } else if (activeDashboardTab === 'settings') {
+        box.innerHTML = `
+          <h3 class="font-display text-xl font-bold text-navy-900 mb-4">Account Settings</h3>
+          <form onsubmit="saveAccountSettings(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl">
+            <input id="set-name" type="text" value="${state.profile.name}" required class="px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 text-sm" />
+            <input id="set-email" type="email" value="${state.profile.email}" required class="px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 text-sm" />
+            <input id="set-city" type="text" value="${state.profile.city}" required class="px-3.5 py-2.5 rounded-xl bg-slateLight-50 border border-slate-200 text-sm" />
+            <button type="submit" class="sm:col-span-3 w-fit px-6 py-2.5 rounded-xl bg-navy-900 text-gold-400 font-bold text-sm">Save Profile Settings</button>
+          </form>
+        `;
+      }
+    }
+
+    function saveAccountSettings(event) {
+      event.preventDefault();
+      state.profile.name = document.getElementById('set-name').value.trim();
+      state.profile.email = document.getElementById('set-email').value.trim();
+      state.profile.city = document.getElementById('set-city').value.trim();
+      persistState();
+      renderDashboard();
+      showToast('Account settings updated.', 'success');
+    }
+
+    // ==================== CONTACT & VISIT FORM ====================
+    function populatePropertySelects() {
+      const sel = document.getElementById('visit-property-select');
+      if (!sel) return;
+      sel.innerHTML = state.properties.map((p) => `<option value="${p.id}">${p.name} — ${p.location}</option>`).join('');
+    }
+
+    function submitVisitOrContactForm(event) {
+      event.preventDefault();
+      const propId = document.getElementById('visit-property-select').value;
+      const prop = state.properties.find((p) => p.id === propId);
+      const name = document.getElementById('visit-name').value.trim();
+      const date = document.getElementById('visit-date').value;
+      const time = document.getElementById('visit-time').value;
+
+      state.visits.unshift({
+        id: 'vis-' + Date.now(),
+        propertyName: prop ? prop.name : 'Selected Property',
+        visitor: name,
+        date,
+        time,
+        status: 'Confirmed'
+      });
+      persistState();
+      renderDashboard();
+      event.target.reset();
+      showToast(`Visit request confirmed for ${date} at ${time}!`, 'success');
+    }
+
+    // ==================== LEGAL MODAL ====================
+    function openLegalModal(type) {
+      const titleEl = document.getElementById('legal-modal-title');
+      const textEl = document.getElementById('legal-modal-text');
+      if (type === 'privacy') {
+        titleEl.textContent = 'Privacy Policy';
+        textEl.textContent = 'DREAM HOMES respects your privacy. Preferences, saved listings, and visit schedules you create in this browser session are stored locally for convenience and never sold to third parties.';
+      } else if (type === 'terms') {
+        titleEl.textContent = 'Terms and Conditions';
+        textEl.textContent = 'Property availability, market valuations, and EMI calculations are provided for informational and demonstration purposes. Final terms are confirmed upon formal property inspection and contract review.';
+      } else {
+        titleEl.textContent = 'Listing Verification Standards';
+        textEl.textContent = 'Properties marked as Verified undergo ownership documentation review, accurate square-footage verification, and genuine media checks.';
+      }
+      document.getElementById('legal-modal').classList.remove('hidden');
+    }
+
+    function closeLegalModal() {
+      document.getElementById('legal-modal').classList.add('hidden');
+    }
+
+    // ==================== INITIALIZATION ====================
+    document.addEventListener('DOMContentLoaded', () => {
+      updateHeaderCounters();
+      renderCategoryTabs();
+      renderProperties();
+      renderMapMarkers();
+      populateCompareDropdown();
+      populatePropertySelects();
+      renderCompareTables();
+      renderTourRoomButtons();
+      renderTour360Room();
+      calculateMortgage();
+      calculatePriceEstimate();
+      runAiPropertyFinder();
+      renderLocationIntelligence();
+      renderAlertsList();
+      renderTestimonial();
+      renderDashboard();
+      initStatsObserver();
+
+      // Set default visit date to tomorrow
+      const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+      const visitDateInput = document.getElementById('visit-date');
+      if (visitDateInput) visitDateInput.value = tomorrow;
+
+      // Auto-advance testimonial slider every 5.5s
+      setInterval(() => {
+        if (state.testimonialAutoplay && !state.testimonialPaused) {
+          nextTestimonial();
+        }
+      }, 5500);
+
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
